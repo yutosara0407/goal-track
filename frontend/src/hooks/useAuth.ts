@@ -4,6 +4,7 @@
  */
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,6 +15,7 @@ import { extractErrorMessage } from '@/lib/utils';
 
 export function useAuth() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { login: storeLogin, logout: storeLogout, user, isAuthenticated } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,6 +27,8 @@ export function useAuth() {
     setIsLoading(true);
     try {
       const response = await authApi.login(data);
+      // 別ユーザーのキャッシュが残らないようにログイン前にクリア
+      queryClient.clear();
       storeLogin(response.user, response.token);
       // middlewareがEdge RuntimeでlocalStorageを読めないため、認証フラグをCookieにも保存
       document.cookie = 'goal_app_auth=1; path=/; max-age=2592000; SameSite=Lax';
@@ -46,6 +50,7 @@ export function useAuth() {
     setIsLoading(true);
     try {
       const response = await authApi.register(data);
+      queryClient.clear();
       storeLogin(response.user, response.token);
       document.cookie = 'goal_app_auth=1; path=/; max-age=2592000; SameSite=Lax';
       toast.success('アカウントを作成しました！目標を登録してみましょう 🎯');
@@ -68,6 +73,8 @@ export function useAuth() {
     } catch {
       // ネットワークエラーでもローカルのトークンはクリアする
     } finally {
+      // ログアウト時にキャッシュを全クリアして他ユーザーへのデータ漏洩を防ぐ
+      queryClient.clear();
       storeLogout();
       document.cookie = 'goal_app_auth=; path=/; max-age=0';
       router.push('/login');
