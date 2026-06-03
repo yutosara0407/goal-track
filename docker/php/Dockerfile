@@ -1,10 +1,10 @@
 FROM php:8.3-fpm-alpine
 
 RUN apk add --no-cache \
-    git curl libpng-dev libxml2-dev zip unzip sqlite sqlite-dev
+    git curl zip unzip sqlite sqlite-dev oniguruma-dev libxml2-dev
 
 RUN docker-php-ext-install \
-    pdo pdo_sqlite mbstring exif pcntl bcmath gd xml
+    pdo pdo_sqlite mbstring exif pcntl bcmath
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
