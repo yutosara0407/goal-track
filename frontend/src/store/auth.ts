@@ -34,14 +34,15 @@ export const useAuthStore = create<AuthState>()(
       isInitialized: false,
 
       login: (user: User, token: string) => {
-        // トークンをローカルストレージに保存
         saveToken(token);
+        // ミドルウェア（Edge Runtime）はlocalStorageを読めないためCookieで認証フラグを管理
+        document.cookie = 'goal_app_auth=1; path=/; SameSite=Lax';
         set({ user, isAuthenticated: true, isInitialized: true });
       },
 
       logout: () => {
-        // トークンを削除
         removeToken();
+        document.cookie = 'goal_app_auth=; path=/; max-age=0';
         set({ user: null, isAuthenticated: false });
       },
 
