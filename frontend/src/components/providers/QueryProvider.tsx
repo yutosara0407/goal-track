@@ -6,7 +6,28 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/store/auth';
+import { getToken } from '@/lib/api';
+
+function AuthSync() {
+  const { isAuthenticated, logout } = useAuthStore();
+
+  useEffect(() => {
+    const hasCookie = document.cookie.includes('goal_app_auth');
+    const hasToken = !!getToken();
+
+    if (isAuthenticated && hasToken && !hasCookie) {
+      // localStorage に認証状態があるが Cookie がない → Cookie を復元
+      document.cookie = 'goal_app_auth=1; path=/; SameSite=Lax';
+    } else if (isAuthenticated && !hasToken) {
+      // トークンがないのに認証状態になっている → 強制ログアウト
+      logout();
+    }
+  }, [isAuthenticated, logout]);
+
+  return null;
+}
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   // コンポーネントごとにQueryClientインスタンスを作成することでSSR時の状態混在を防ぐ
@@ -28,6 +49,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthSync />
       {children}
       {/* 開発環境のみDevToolsを表示 */}
       {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
