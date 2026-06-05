@@ -66,6 +66,7 @@ export function CalendarView() {
   const { data, isLoading } = useQuery({
     queryKey: ['stats', 'monthly', currentYear, currentMonth],
     queryFn: () => statsApi.monthly(currentYear, currentMonth),
+    staleTime: 0,
   });
 
   // カレンダーの日付グリッドを生成

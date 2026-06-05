@@ -33,6 +33,7 @@ class StatsController extends Controller
             return response()->json([
                 'total_goals'            => 0,
                 'active_goals'           => 0,
+                'today_completed_count'  => 0,
                 'today_completion_rate'  => 0,
                 'week_completion_rate'   => 0,
                 'month_completion_rate'  => 0,

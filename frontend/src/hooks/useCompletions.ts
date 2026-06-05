@@ -71,8 +71,9 @@ export function useToggleCompletion() {
       queryClient.invalidateQueries({
         queryKey: [...COMPLETIONS_QUERY_KEY, 'day', variables.date],
       });
-      // 統計データも更新
-      queryClient.invalidateQueries({ queryKey: ['stats'] });
+      // 統計データを更新（overview・monthly 両方を明示的に無効化）
+      queryClient.invalidateQueries({ queryKey: ['stats', 'overview'] });
+      queryClient.invalidateQueries({ queryKey: ['stats', 'monthly'] });
     },
   });
 }
