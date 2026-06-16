@@ -71,8 +71,10 @@ export function useToggleCompletion() {
       queryClient.invalidateQueries({
         queryKey: [...COMPLETIONS_QUERY_KEY, 'day', variables.date],
       });
-      // 統計データも更新
-      queryClient.invalidateQueries({ queryKey: ['stats'] });
+      // 統計データも再フェッチ（キャッシュ無効化だけでなく強制refetch）
+      queryClient.refetchQueries({
+        queryKey: ['stats'],
+      });
     },
   });
 }
