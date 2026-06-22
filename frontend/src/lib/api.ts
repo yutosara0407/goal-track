@@ -63,8 +63,10 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       removeToken();
-      // クライアントサイドのみリダイレクト
       if (typeof window !== 'undefined') {
+        // Zustand ストアは循環依存のため直接触らず、Cookie とトークンだけ先にクリア
+        // AuthSync がログインページで残りの状態（isAuthenticated）をクリアする
+        document.cookie = 'goal_app_auth=; path=/; max-age=0';
         window.location.href = '/login';
       }
     }

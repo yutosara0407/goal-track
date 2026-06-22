@@ -11,22 +11,31 @@ import { useAuthStore } from '@/store/auth';
 import { getToken } from '@/lib/api';
 
 function AuthSync() {
-  const { isAuthenticated, logout, setInitialized } = useAuthStore();
-
   useEffect(() => {
-    const hasCookie = document.cookie.includes('goal_app_auth');
-    const hasToken = !!getToken();
+    const runSync = () => {
+      // Zustand 水和後の実際の状態を取得
+      const { isAuthenticated, logout, setInitialized } = useAuthStore.getState();
+      const hasCookie = document.cookie.includes('goal_app_auth');
+      const hasToken = !!getToken();
 
-    if (isAuthenticated && hasToken && !hasCookie) {
-      // localStorage に認証状態があるが Cookie がない → Cookie を復元
-      document.cookie = 'goal_app_auth=1; path=/; SameSite=Lax';
-    } else if (isAuthenticated && !hasToken) {
-      // トークンがないのに認証状態になっている → 強制ログアウト
-      logout();
+      if (isAuthenticated && hasToken && !hasCookie) {
+        // Cookie がない → 復元
+        document.cookie = 'goal_app_auth=1; path=/; SameSite=Lax';
+      } else if (isAuthenticated && !hasToken) {
+        // トークンなし → 強制ログアウト
+        logout();
+      }
+      // Cookie/トークン整合性チェック完了後に初期化フラグをセット
+      setInitialized();
+    };
+
+    // persist が既に水和済み（同期ストレージ等）ならすぐ実行
+    if (useAuthStore.persist.hasHydrated()) {
+      runSync();
+    } else {
+      // 水和完了イベントを待ってから実行
+      return useAuthStore.persist.onFinishHydration(runSync);
     }
-    // 同期完了後に初期化フラグをセット（ページ側のリダイレクト制御に使用）
-    setInitialized();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;
