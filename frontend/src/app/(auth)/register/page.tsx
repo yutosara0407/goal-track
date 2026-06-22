@@ -36,13 +36,13 @@ const registerSchema = z
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register: registerUser, isLoading, isAuthenticated } = useAuth();
+  const { register: registerUser, isLoading, isAuthenticated, isInitialized } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isInitialized && isAuthenticated) {
       router.push('/dashboard');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isInitialized, router]);
 
   const {
     register,

@@ -16,7 +16,7 @@ import { extractErrorMessage } from '@/lib/utils';
 export function useAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { login: storeLogin, logout: storeLogout, user, isAuthenticated } = useAuthStore();
+  const { login: storeLogin, logout: storeLogout, user, isAuthenticated, isInitialized } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
   /**
@@ -85,6 +85,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
+    isInitialized,
     isLoading,
     login,
     register,

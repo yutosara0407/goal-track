@@ -23,14 +23,15 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const { login, isLoading, isAuthenticated, isInitialized } = useAuth();
 
-  // 認証済みの場合はダッシュボードへリダイレクト
+  // 初期化完了後、認証済みの場合はダッシュボードへリダイレクト
+  // isInitialized のガードにより、localStorage復元直後の誤リダイレクトを防ぐ
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isInitialized && isAuthenticated) {
       router.push('/dashboard');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isInitialized, router]);
 
   const {
     register,

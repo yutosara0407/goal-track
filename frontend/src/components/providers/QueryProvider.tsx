@@ -11,7 +11,7 @@ import { useAuthStore } from '@/store/auth';
 import { getToken } from '@/lib/api';
 
 function AuthSync() {
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, setInitialized } = useAuthStore();
 
   useEffect(() => {
     const hasCookie = document.cookie.includes('goal_app_auth');
@@ -24,7 +24,10 @@ function AuthSync() {
       // トークンがないのに認証状態になっている → 強制ログアウト
       logout();
     }
-  }, [isAuthenticated, logout]);
+    // 同期完了後に初期化フラグをセット（ページ側のリダイレクト制御に使用）
+    setInitialized();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 }
