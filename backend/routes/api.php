@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompletionController;
+use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\StatsController;
 use Illuminate\Support\Facades\Route;
@@ -38,4 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // 統計・分析
     Route::get('/stats/overview', [StatsController::class, 'overview']); // ダッシュボード用サマリー
     Route::get('/stats/monthly', [StatsController::class, 'monthly']);   // 月次カレンダーデータ
+
+    // メール送信状況
+    Route::get('/email/status', [EmailController::class, 'status']);
 });

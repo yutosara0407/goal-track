@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /** 認証不要なパス（パブリックルート） */
-const PUBLIC_PATHS = ['/login', '/register'];
+const PUBLIC_PATHS = ['/', '/login', '/register'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

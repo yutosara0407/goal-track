@@ -12,8 +12,21 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  plan: 'free' | 'premium';
+  email_send_count: number;
+  email_send_reset_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/** メール送信状況 */
+export interface EmailStatus {
+  plan: 'free' | 'premium';
+  limit: number;
+  used: number;
+  remaining: number;
+  /** YYYY-MM-DD 形式 */
+  reset_at: string;
 }
 
 /** 目標 */

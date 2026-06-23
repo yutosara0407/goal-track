@@ -7,9 +7,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, LogOut } from 'lucide-react';
+import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, LogOut, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
+import { useEmailStatus } from '@/hooks/useEmailStatus';
 
 interface NavItem {
   href: string;
@@ -27,6 +28,7 @@ const navItems: NavItem[] = [
 export function Header() {
   const pathname = usePathname();
   const { logout, user } = useAuth();
+  const { data: emailStatus } = useEmailStatus();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // 現在のページ名を取得
@@ -107,6 +109,38 @@ export function Header() {
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">{user?.name}</p>
                 <p className="text-xs text-gray-400 truncate">{user?.email}</p>
               </div>
+
+              {/* メール送信残数（モバイル） */}
+              {emailStatus && (
+                <div className="mx-3 mb-2 px-2.5 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <Mail size={11} className="text-gray-400 shrink-0" />
+                      <span className="text-[10px] text-gray-400">メール送信</span>
+                    </div>
+                    <span className="text-[10px] text-gray-400">
+                      {new Date(emailStatus.reset_at).getMonth() + 1}月末リセット
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                      <div
+                        className={cn(
+                          'h-full rounded-full',
+                          emailStatus.remaining <= 5 ? 'bg-red-400' : emailStatus.remaining <= 10 ? 'bg-amber-400' : 'bg-primary-500'
+                        )}
+                        style={{ width: `${(emailStatus.remaining / emailStatus.limit) * 100}%` }}
+                      />
+                    </div>
+                    <span className={cn(
+                      'text-xs font-medium whitespace-nowrap',
+                      emailStatus.remaining <= 5 ? 'text-red-500' : emailStatus.remaining <= 10 ? 'text-amber-500' : 'text-gray-600 dark:text-gray-300'
+                    )}>
+                      残り {emailStatus.remaining} 通
+                    </span>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);

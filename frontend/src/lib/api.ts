@@ -6,6 +6,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import {
   AuthResponse,
   DayCompletions,
+  EmailStatus,
   Goal,
   GoalCompletion,
   GoalFormData,
@@ -192,6 +193,18 @@ export const statsApi = {
     const res = await apiClient.get<MonthlyStatsResponse>('/stats/monthly', {
       params: { year, month },
     });
+    return res.data;
+  },
+};
+
+// ============================================================
+// メールAPI
+// ============================================================
+
+export const emailApi = {
+  /** メール送信状況を取得（月替わり時は自動リセット） */
+  status: async (): Promise<EmailStatus> => {
+    const res = await apiClient.get<EmailStatus>('/email/status');
     return res.data;
   },
 };
