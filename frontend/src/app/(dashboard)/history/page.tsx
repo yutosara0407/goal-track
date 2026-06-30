@@ -90,23 +90,23 @@ export default function HistoryPage() {
     <div className="space-y-6 animate-fade-in">
       {/* ページヘッダー */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <History size={24} className="text-primary-600" />
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <History size={24} className="text-indigo-600" />
           履歴・分析
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           過去の達成状況を振り返って、習慣の傾向を把握できます
         </p>
       </div>
 
       {/* 今月のグラフ */}
-      <div className="card p-5">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
-          <TrendingUp size={16} className="text-primary-600" />
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
+          <TrendingUp size={16} className="text-indigo-600" />
           今月の達成率推移
         </h2>
         {isMonthlyLoading ? (
-          <div className="h-40 bg-gray-50 dark:bg-gray-800 rounded-xl animate-pulse" />
+          <div className="h-40 bg-slate-50 dark:bg-slate-800 rounded-xl animate-pulse" />
         ) : chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -147,14 +147,14 @@ export default function HistoryPage() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-center text-gray-400 py-8">データがありません</p>
+          <p className="text-center text-slate-400 py-8">データがありません</p>
         )}
       </div>
 
       {/* 目標別達成統計 */}
       {monthlyStats && monthlyStats.goal_stats.length > 0 && (
-        <div className="card p-5">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
             今月の目標別達成率
           </h2>
           <div className="space-y-4">
@@ -168,13 +168,13 @@ export default function HistoryPage() {
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: stat.goal.color }}
                       />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{stat.goal.title}</span>
+                      <span className="text-sm text-slate-700 dark:text-slate-300">{stat.goal.title}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {stat.current_streak >= 3 && (
                         <Badge variant="warning">🔥 {stat.current_streak}日</Badge>
                       )}
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">
                         {formatRate(stat.completion_rate)}
                       </span>
                     </div>
@@ -191,24 +191,24 @@ export default function HistoryPage() {
       )}
 
       {/* 達成履歴リスト */}
-      <div className="card p-5">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
             <CheckCircle2 size={16} className="text-success-600" />
             達成履歴
           </h2>
 
           <div className="flex flex-wrap gap-2">
             {/* 期間フィルター */}
-            <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden text-xs">
+            <div className="flex rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
               {periodOptions.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setSelectedPeriod(option.value)}
                   className={`px-3 py-1.5 transition-colors ${
                     selectedPeriod === option.value
-                      ? 'bg-primary-600 text-white'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
                   {option.label}
@@ -220,7 +220,7 @@ export default function HistoryPage() {
             <select
               value={selectedGoalId ?? ''}
               onChange={(e) => setSelectedGoalId(e.target.value ? Number(e.target.value) : undefined)}
-              className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">すべての目標</option>
               {goals?.map((goal) => (
@@ -237,16 +237,16 @@ export default function HistoryPage() {
           <div className="space-y-2">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="flex gap-3 p-2 animate-pulse">
-                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-lg" />
+                <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg" />
                 <div className="flex-1 space-y-1.5">
-                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : !historyData || historyData.length === 0 ? (
-          <p className="text-center text-gray-400 py-8 text-sm">
+          <p className="text-center text-slate-400 py-8 text-sm">
             この期間の達成記録がありません
           </p>
         ) : (
@@ -254,7 +254,7 @@ export default function HistoryPage() {
             {historyData.map((completion) => (
               <div
                 key={completion.id}
-                className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <div
                   className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -265,14 +265,14 @@ export default function HistoryPage() {
                   <CheckCircle2 size={14} style={{ color: completion.goal?.color ?? '#6366f1' }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-800 dark:text-gray-200 truncate">
+                  <p className="text-sm text-slate-800 dark:text-slate-200 truncate">
                     {completion.goal?.title ?? '不明な目標'}
                   </p>
                   {completion.note && (
-                    <p className="text-xs text-gray-400 truncate mt-0.5">{completion.note}</p>
+                    <p className="text-xs text-slate-400 truncate mt-0.5">{completion.note}</p>
                   )}
                 </div>
-                <span className="text-xs text-gray-400 flex-shrink-0">
+                <span className="text-xs text-slate-400 flex-shrink-0">
                   {format(new Date(completion.date), 'M/d(E)', { locale: ja })}
                 </span>
               </div>
@@ -282,11 +282,11 @@ export default function HistoryPage() {
 
         {/* 集計情報 */}
         {historyData && historyData.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400">
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <p className="text-xs text-slate-400">
               {format(new Date(from), 'M月d日', { locale: ja })} 〜{' '}
               {format(new Date(to), 'M月d日', { locale: ja })}: 合計{' '}
-              <strong className="text-gray-700 dark:text-gray-300">{historyData.length}件</strong>{' '}
+              <strong className="text-slate-700 dark:text-slate-300">{historyData.length}件</strong>{' '}
               達成
             </p>
           </div>

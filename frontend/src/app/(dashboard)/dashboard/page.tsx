@@ -31,8 +31,8 @@ export default function DashboardPage() {
     <div className="space-y-6 animate-fade-in">
       {/* ページヘッダー */}
       <div>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{today}</p>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">
+        <p className="text-sm text-slate-500 dark:text-slate-400">{today}</p>
+        <h1 className="text-2xl font-bold mt-0.5 bg-gradient-to-r from-slate-800 to-indigo-700 dark:from-slate-100 dark:to-indigo-300 bg-clip-text text-transparent">
           おはようございます、{user?.name?.split(' ')[0]}さん 👋
         </h1>
       </div>
@@ -53,7 +53,7 @@ export default function DashboardPage() {
               value={stats.today_completion_rate}
               rate={stats.today_completion_rate}
               description={`${stats.today_completed_count}/${stats.active_goals}個 完了`}
-              icon={<CalendarCheck size={18} className="text-primary-600 dark:text-primary-400" />}
+              icon={<CalendarCheck size={18} className="text-indigo-600 dark:text-indigo-400" />}
               iconBgColor="bg-primary-50 dark:bg-primary-900/20"
             />
             <StatsCard
@@ -85,8 +85,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         {/* 今日の目標チェックリスト（2/3幅） */}
         <div className="lg:col-span-2">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-            <CalendarCheck size={18} className="text-primary-600" />
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+            <CalendarCheck size={18} className="text-indigo-600" />
             今日の目標
           </h2>
           <TodayGoals />
@@ -94,15 +94,15 @@ export default function DashboardPage() {
 
         {/* ストリーク（1/3幅） */}
         <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3">
             🔥 継続ランキング
           </h2>
           {stats ? (
             <StreakCard streaks={stats.current_streaks} />
           ) : (
-            <div className="card p-5 space-y-3">
-              <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
-              <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded animate-pulse w-3/4" />
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm p-5 space-y-3">
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse" />
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded animate-pulse w-3/4" />
             </div>
           )}
         </div>

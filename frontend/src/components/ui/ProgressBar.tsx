@@ -30,18 +30,23 @@ export function ProgressBar({
   const percentage = Math.round(Math.min(Math.max(value, 0), 1) * 100);
 
   // 達成率に応じたデフォルトカラー
-  const defaultColor =
-    percentage >= 80 ? '#22c55e' : percentage >= 50 ? '#f59e0b' : '#ef4444';
+  const defaultGradient =
+    percentage >= 80
+      ? 'linear-gradient(to right, #22c55e, #16a34a)'
+      : percentage >= 50
+      ? 'linear-gradient(to right, #f59e0b, #d97706)'
+      : 'linear-gradient(to right, #ef4444, #dc2626)';
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
       {/* バー本体 */}
-      <div className={cn('flex-1 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden', sizeClasses[size])}>
+      <div className={cn('flex-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden', sizeClasses[size])}>
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{
             width: `${percentage}%`,
-            backgroundColor: color || defaultColor,
+            background: color ? undefined : defaultGradient,
+            backgroundColor: color || undefined,
           }}
           role="progressbar"
           aria-valuenow={percentage}
@@ -52,7 +57,7 @@ export function ProgressBar({
 
       {/* パーセント表示 */}
       {showLabel && (
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-8 text-right">
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 w-8 text-right">
           {percentage}%
         </span>
       )}

@@ -55,11 +55,11 @@ export default function GoalsPage() {
       {/* ページヘッダー */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <ListTodo size={24} className="text-primary-600" />
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <ListTodo size={24} className="text-indigo-600" />
             目標管理
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             日々クリアしたい目標を登録・管理できます
           </p>
         </div>
@@ -81,16 +81,16 @@ export default function GoalsPage() {
           {/* アクティブな目標 */}
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
                 アクティブ ({activeGoals.length})
               </h2>
             </div>
 
             {activeGoals.length === 0 ? (
-              <div className="card p-10 text-center">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 border border-slate-100 dark:border-slate-800 shadow-sm text-center">
                 <div className="text-5xl mb-3">🌱</div>
-                <p className="text-gray-600 dark:text-gray-400 font-medium">目標がありません</p>
-                <p className="text-sm text-gray-400 mt-1">「目標を追加」ボタンから最初の目標を登録しましょう</p>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">目標がありません</p>
+                <p className="text-sm text-slate-400 mt-1">「目標を追加」ボタンから最初の目標を登録しましょう</p>
                 <Button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="mt-4"
@@ -118,7 +118,7 @@ export default function GoalsPage() {
           {(inactiveGoals.length > 0 || showInactive) && (
             <section>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
                   アーカイブ済み ({inactiveGoals.length})
                 </h2>
                 <button

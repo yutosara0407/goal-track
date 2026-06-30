@@ -23,20 +23,20 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
   return (
     <div
       className={cn(
-        'card p-4 flex items-center gap-4 transition-all duration-200',
+        'bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md hover:shadow-slate-200/60 dark:hover:shadow-black/20 flex items-center gap-4 transition-all duration-200',
         !goal.is_active && 'opacity-60'
       )}
     >
       {/* カラーバー（左端のアクセントライン） */}
       <div
-        className="w-1 h-12 rounded-full flex-shrink-0"
+        className="w-1.5 h-10 rounded-full flex-shrink-0"
         style={{ backgroundColor: goal.color }}
       />
 
       {/* メイン情報 */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
             {goal.title}
           </h3>
           {!goal.is_active && (
@@ -44,7 +44,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
           )}
         </div>
         {goal.description && (
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">
             {goal.description}
           </p>
         )}
@@ -60,7 +60,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
       <div className="relative flex-shrink-0">
         <button
           onClick={() => setIsMenuOpen((v) => !v)}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           aria-label="操作メニュー"
           aria-expanded={isMenuOpen}
           aria-haspopup="true"
@@ -77,13 +77,13 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
               onClick={() => setIsMenuOpen(false)}
               aria-hidden="true"
             />
-            <div className="absolute right-0 z-20 mt-1 w-40 card py-1 shadow-lg border border-gray-100 dark:border-gray-700 animate-slide-up">
+            <div className="absolute right-0 z-20 mt-1 w-40 bg-white dark:bg-slate-900 rounded-2xl py-1 shadow-xl shadow-slate-200/60 dark:shadow-black/40 border border-slate-100 dark:border-slate-700 animate-slide-up">
               <button
                 onClick={() => {
                   setIsMenuOpen(false);
                   onEdit(goal);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 <Edit2 size={14} />
                 編集
@@ -93,12 +93,12 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
                   setIsMenuOpen(false);
                   onToggleActive(goal);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 {goal.is_active ? <Archive size={14} /> : <RotateCcw size={14} />}
                 {goal.is_active ? 'アーカイブ' : '再開'}
               </button>
-              <div className="my-1 border-t border-gray-100 dark:border-gray-700" />
+              <div className="my-1 border-t border-slate-100 dark:border-slate-700" />
               <button
                 onClick={() => {
                   setIsMenuOpen(false);

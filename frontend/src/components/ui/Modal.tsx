@@ -70,19 +70,19 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', className
       {/* モーダル本体 */}
       <div
         className={cn(
-          'relative w-full card p-6 animate-slide-up',
+          'relative w-full bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/60 dark:shadow-black/40 p-6 border border-slate-100 dark:border-slate-800 animate-slide-up',
           sizeClasses[size],
           className
         )}
       >
         {/* ヘッダー */}
         <div className="flex items-center justify-between mb-5">
-          <h2 id="modal-title" className="text-lg font-semibold text-gray-900 dark:text-gray-50">
+          <h2 id="modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-50">
             {title}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="閉じる"
           >
             <X size={18} />

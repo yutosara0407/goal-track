@@ -61,36 +61,36 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-violet-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-violet-50 dark:from-slate-950 dark:via-indigo-950/30 dark:to-slate-950 p-4">
       <div className="w-full max-w-md">
         {/* ロゴ */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-600 shadow-lg shadow-primary-200 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-200/70 dark:shadow-indigo-900/50 mb-4">
             <Target size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">GoalTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">目標達成管理アプリ</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-violet-400">GoalTrack</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">目標達成管理アプリ</p>
         </div>
 
         {/* フォームカード */}
-        <div className="card p-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">新規登録</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-indigo-100/50 dark:shadow-black/40 border border-slate-100 dark:border-slate-800 p-8">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">新規登録</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
             {/* 名前 */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 お名前
               </label>
               <div className="relative">
-                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="name"
                   type="text"
                   autoComplete="name"
                   placeholder="山田 太郎"
                   {...register('name')}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.name}
                 />
               </div>
@@ -101,18 +101,18 @@ export default function RegisterPage() {
 
             {/* メールアドレス */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 メールアドレス
               </label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="email"
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
                   {...register('email')}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.email}
                 />
               </div>
@@ -123,18 +123,18 @@ export default function RegisterPage() {
 
             {/* パスワード */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 パスワード
               </label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="password"
                   type="password"
                   autoComplete="new-password"
                   placeholder="8文字以上"
                   {...register('password')}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.password}
                 />
               </div>
@@ -145,18 +145,18 @@ export default function RegisterPage() {
 
             {/* パスワード確認 */}
             <div>
-              <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                 パスワード（確認）
               </label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="password_confirmation"
                   type="password"
                   autoComplete="new-password"
                   placeholder="もう一度入力"
                   {...register('password_confirmation')}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.password_confirmation}
                 />
               </div>
@@ -179,7 +179,7 @@ export default function RegisterPage() {
           </form>
 
           {/* ログインリンク */}
-          <p className="mt-5 text-center text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
             既にアカウントをお持ちの方は{' '}
             <Link
               href="/login"

@@ -36,20 +36,20 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 lg:hidden">
+      <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-700/60 lg:hidden">
         <div className="flex items-center justify-between px-4 h-14">
           {/* ロゴ（モバイル） */}
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-200/60 dark:shadow-indigo-900/40 flex items-center justify-center">
               <Target size={14} className="text-white" />
             </div>
-            <span className="font-bold text-gray-900 dark:text-white text-sm">GoalTrack</span>
+            <span className="font-bold text-sm bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">GoalTrack</span>
           </div>
 
           {/* ハンバーガーメニューボタン */}
           <button
             onClick={() => setIsMobileMenuOpen((v) => !v)}
-            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label={isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
             aria-expanded={isMobileMenuOpen}
           >
@@ -69,13 +69,13 @@ export function Header() {
           />
 
           {/* メニュー本体（左スライドイン） */}
-          <nav className="absolute inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl flex flex-col animate-slide-up">
+          <nav className="absolute inset-y-0 left-0 w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-xl flex flex-col animate-slide-up">
             {/* ロゴ */}
-            <div className="flex items-center gap-2.5 px-4 py-4 border-b border-gray-100 dark:border-gray-800">
-              <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+            <div className="flex items-center gap-2.5 px-4 py-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-200/60 dark:shadow-indigo-900/40 flex items-center justify-center">
                 <Target size={16} className="text-white" />
               </div>
-              <span className="font-bold text-gray-900 dark:text-white">GoalTrack</span>
+              <span className="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">GoalTrack</span>
             </div>
 
             {/* ナビリンク */}
@@ -90,11 +90,11 @@ export function Header() {
                     className={cn(
                       'flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800'
+                        ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-semibold'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60'
                     )}
                   >
-                    <span className={cn(isActive ? 'text-primary-600' : 'text-gray-400')}>
+                    <span className={cn(isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400')}>
                       {item.icon}
                     </span>
                     {item.label}
@@ -104,26 +104,26 @@ export function Header() {
             </div>
 
             {/* ユーザー情報 & ログアウト */}
-            <div className="border-t border-gray-100 dark:border-gray-800 px-3 py-3">
+            <div className="border-t border-slate-100 dark:border-slate-800 px-3 py-3">
               <div className="px-3 py-2 mb-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">{user?.name}</p>
-                <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">{user?.name}</p>
+                <p className="text-xs text-slate-400 truncate">{user?.email}</p>
               </div>
 
               {/* メール送信残数（モバイル） */}
               {emailStatus && (
-                <div className="mx-3 mb-2 px-2.5 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60">
+                <div className="mx-3 mb-2 px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-1.5">
-                      <Mail size={11} className="text-gray-400 shrink-0" />
-                      <span className="text-[10px] text-gray-400">メール送信</span>
+                      <Mail size={11} className="text-slate-400 shrink-0" />
+                      <span className="text-[10px] text-slate-400">メール送信</span>
                     </div>
-                    <span className="text-[10px] text-gray-400">
+                    <span className="text-[10px] text-slate-400">
                       {new Date(emailStatus.reset_at).getMonth() + 1}月末リセット
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    <div className="flex-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                       <div
                         className={cn(
                           'h-full rounded-full',
@@ -134,7 +134,7 @@ export function Header() {
                     </div>
                     <span className={cn(
                       'text-xs font-medium whitespace-nowrap',
-                      emailStatus.remaining <= 5 ? 'text-red-500' : emailStatus.remaining <= 10 ? 'text-amber-500' : 'text-gray-600 dark:text-gray-300'
+                      emailStatus.remaining <= 5 ? 'text-red-500' : emailStatus.remaining <= 10 ? 'text-amber-500' : 'text-slate-600 dark:text-slate-300'
                     )}>
                       残り {emailStatus.remaining} 通
                     </span>
@@ -146,9 +146,9 @@ export function Header() {
                   setIsMobileMenuOpen(false);
                   logout();
                 }}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 transition-colors"
               >
-                <LogOut size={18} className="text-gray-400" />
+                <LogOut size={18} className="text-slate-400" />
                 ログアウト
               </button>
             </div>

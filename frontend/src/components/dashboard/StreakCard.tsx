@@ -16,12 +16,12 @@ export function StreakCard({ streaks }: StreakCardProps) {
 
   if (activeStreaks.length === 0) {
     return (
-      <div className="card p-5">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <Flame size={16} className="text-orange-400" />
           継続ストリーク
         </h3>
-        <p className="text-sm text-gray-400 text-center py-2">
+        <p className="text-sm text-slate-400 text-center py-2">
           まだストリークがありません 🌱
         </p>
       </div>
@@ -31,8 +31,8 @@ export function StreakCard({ streaks }: StreakCardProps) {
   const maxStreak = Math.max(...activeStreaks.map((s) => s.streak));
 
   return (
-    <div className="card p-5">
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
         <Flame size={16} className="text-orange-400" />
         継続ストリーク
       </h3>
@@ -43,10 +43,10 @@ export function StreakCard({ streaks }: StreakCardProps) {
             <span
               className={cn(
                 'w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold flex-shrink-0',
-                index === 0 && 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                index === 1 && 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
-                index === 2 && 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400',
-                index > 2 && 'bg-gray-50 text-gray-400 dark:bg-gray-800/50 dark:text-gray-500'
+                index === 0 && 'bg-gradient-to-br from-yellow-400 to-amber-500 text-white',
+                index === 1 && 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
+                index === 2 && 'bg-gradient-to-br from-orange-400 to-amber-400 text-white',
+                index > 2 && 'bg-slate-50 text-slate-400 dark:bg-slate-800/50 dark:text-slate-500'
               )}
             >
               {index + 1}
@@ -59,14 +59,14 @@ export function StreakCard({ streaks }: StreakCardProps) {
             />
 
             {/* 目標名 */}
-            <p className="text-sm text-gray-700 dark:text-gray-300 flex-1 truncate">
+            <p className="text-sm text-slate-700 dark:text-slate-300 flex-1 truncate">
               {item.goal.title}
             </p>
 
             {/* ストリーク数 */}
             <div className="flex items-center gap-1 flex-shrink-0">
               {item.streak >= 7 && <Flame size={12} className="text-orange-400" />}
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+              <span className="text-sm font-semibold text-slate-900 dark:text-white">
                 {item.streak}日
               </span>
             </div>

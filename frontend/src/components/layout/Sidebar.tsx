@@ -38,13 +38,13 @@ export function Sidebar() {
   const { data: emailStatus } = useEmailStatus();
 
   return (
-    <aside className="hidden lg:flex lg:flex-col w-60 h-screen sticky top-0 border-r border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-4">
+    <aside className="hidden lg:flex lg:flex-col w-60 h-screen sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-r border-slate-200/60 dark:border-slate-700/60 px-3 py-4">
       {/* ロゴ */}
       <div className="flex items-center gap-2.5 px-3 mb-6">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-600">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-200/60 dark:shadow-indigo-900/40">
           <Target size={16} className="text-white" />
         </div>
-        <span className="font-bold text-gray-900 dark:text-white text-base">GoalTrack</span>
+        <span className="font-bold text-base bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">GoalTrack</span>
       </div>
 
       {/* ナビゲーション */}
@@ -58,14 +58,14 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                  ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'
               )}
               aria-current={isActive ? 'page' : undefined}
             >
               <span
                 className={cn(
-                  isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500'
+                  isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'
                 )}
               >
                 {item.icon}
@@ -73,7 +73,7 @@ export function Sidebar() {
               {item.label}
               {/* アクティブインジケーター */}
               {isActive && (
-                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-600 dark:bg-primary-400" />
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
               )}
             </Link>
           );
@@ -81,18 +81,18 @@ export function Sidebar() {
       </nav>
 
       {/* ユーザー情報 & ログアウト */}
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-3 mt-3">
+      <div className="border-t border-slate-100 dark:border-slate-800 pt-3 mt-3">
         <div className="px-3 py-2 mb-1">
-          <p className="text-xs font-medium text-gray-900 dark:text-gray-200 truncate">{user?.name}</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{user?.email}</p>
+          <p className="text-xs font-medium text-slate-900 dark:text-slate-200 truncate">{user?.name}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{user?.email}</p>
         </div>
 
         {/* メール送信残数 */}
         {emailStatus && (
-          <div className="mx-3 mb-2 px-2.5 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60">
+          <div className="mx-3 mb-2 px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
             <div className="flex items-center gap-1.5 mb-1">
-              <Mail size={11} className="text-gray-400 dark:text-gray-500 shrink-0" />
-              <span className="text-[10px] text-gray-400 dark:text-gray-500">メール送信</span>
+              <Mail size={11} className="text-slate-400 dark:text-slate-500 shrink-0" />
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">メール送信</span>
             </div>
             <div className="flex items-baseline justify-between">
               <span className={cn(
@@ -101,15 +101,15 @@ export function Sidebar() {
                   ? 'text-red-500 dark:text-red-400'
                   : emailStatus.remaining <= 10
                   ? 'text-amber-500 dark:text-amber-400'
-                  : 'text-gray-600 dark:text-gray-300'
+                  : 'text-slate-600 dark:text-slate-300'
               )}>
                 残り {emailStatus.remaining} 通
               </span>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">
                 {new Date(emailStatus.reset_at).getMonth() + 1}月末リセット
               </span>
             </div>
-            <div className="mt-1.5 h-1 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+            <div className="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
               <div
                 className={cn(
                   'h-full rounded-full transition-all',
@@ -126,9 +126,9 @@ export function Sidebar() {
         )}
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200 transition-colors"
         >
-          <LogOut size={18} className="text-gray-400" />
+          <LogOut size={18} className="text-slate-400" />
           ログアウト
         </button>
       </div>

@@ -26,17 +26,17 @@ export function StatsCard({
   className,
 }: StatsCardProps) {
   return (
-    <div className={cn('card p-5 animate-fade-in', className)}>
+    <div className={cn('bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm animate-fade-in', className)}>
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
             {title}
           </p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+          <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {typeof value === 'number' && rate !== undefined ? formatRate(value as number) : value}
           </p>
         </div>
-        <div className={cn('p-2.5 rounded-xl', iconBgColor)}>
+        <div className={cn('p-2.5 rounded-2xl', iconBgColor)}>
           {icon}
         </div>
       </div>
@@ -48,7 +48,7 @@ export function StatsCard({
 
       {/* 補足説明 */}
       {description && (
-        <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">{description}</p>
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">{description}</p>
       )}
     </div>
   );

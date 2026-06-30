@@ -8,7 +8,7 @@ import { Header } from '@/components/layout/Header';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/20 dark:from-slate-900 dark:via-indigo-900/20 dark:to-violet-900/10">
       {/* デスクトップ: 左サイドバー */}
       <Sidebar />
 
@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Header />
 
         {/* ページコンテンツ */}
-        <main className="flex-1 p-4 lg:p-8 max-w-6xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-6xl mx-auto w-full">
           {children}
         </main>
       </div>
