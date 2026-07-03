@@ -1,7 +1,3 @@
-/**
- * 履歴・分析ページ
- * 過去の達成記録を棒グラフ・リストで確認できる
- */
 'use client';
 
 import { useState } from 'react';
@@ -17,25 +13,17 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { History, CheckCircle2, TrendingUp } from 'lucide-react';
+import { History, CheckCircle2, TrendingUp, Download } from 'lucide-react';
 import { statsApi, completionsApi } from '@/lib/api';
 import { useGoals } from '@/hooks/useGoals';
-import { formatRate, todayString } from '@/lib/utils';
+import { downloadCsv, formatRate, todayString } from '@/lib/utils';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Badge } from '@/components/ui/Badge';
 import { StatCardSkeleton } from '@/components/ui/LoadingSkeleton';
+import { useLang } from '@/contexts/LangContext';
 
-/** 期間選択オプション */
 type PeriodOption = '7days' | '30days' | 'thisMonth' | 'lastMonth';
 
-const periodOptions: { value: PeriodOption; label: string }[] = [
-  { value: '7days',     label: '過去7日' },
-  { value: '30days',    label: '過去30日' },
-  { value: 'thisMonth', label: '今月' },
-  { value: 'lastMonth', label: '先月' },
-];
-
-/** 期間オプションから日付範囲を計算する */
 function getPeriodRange(period: PeriodOption): { from: string; to: string } {
   const today = new Date();
   switch (period) {
@@ -61,24 +49,29 @@ function getPeriodRange(period: PeriodOption): { from: string; to: string } {
 export default function HistoryPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodOption>('30days');
   const [selectedGoalId, setSelectedGoalId] = useState<number | undefined>(undefined);
+  const { t } = useLang();
+
+  const periodOptions: { value: PeriodOption; label: string }[] = [
+    { value: '7days',     label: t.history.last7 },
+    { value: '30days',    label: t.history.last30 },
+    { value: 'thisMonth', label: t.history.thisMonth },
+    { value: 'lastMonth', label: t.history.lastMonth },
+  ];
 
   const { from, to } = getPeriodRange(selectedPeriod);
   const { data: goals } = useGoals();
 
-  // 月次統計（グラフ用）
   const now = new Date();
   const { data: monthlyStats, isLoading: isMonthlyLoading } = useQuery({
     queryKey: ['stats', 'monthly', now.getFullYear(), now.getMonth() + 1],
     queryFn: () => statsApi.monthly(now.getFullYear(), now.getMonth() + 1),
   });
 
-  // 達成履歴リスト
   const { data: historyData, isLoading: isHistoryLoading } = useQuery({
     queryKey: ['completions', 'history', { from, to, goalId: selectedGoalId }],
     queryFn: () => completionsApi.getHistory(from, to, selectedGoalId),
   });
 
-  // グラフ用のデータ整形（日ごとの達成数）
   const chartData = monthlyStats?.days.map((d) => ({
     date: format(new Date(d.date), 'M/d'),
     rate: Math.round(d.completion_rate * 100),
@@ -86,16 +79,25 @@ export default function HistoryPage() {
     total: d.total_goals,
   })) ?? [];
 
+  const handleExportCsv = () => {
+    if (!historyData || historyData.length === 0) return;
+    const rows = [
+      [t.history.csvHeaderGoal, t.history.csvHeaderDate, t.history.csvHeaderNote],
+      ...historyData.map((c) => [c.goal?.title ?? '', c.date, c.note ?? '']),
+    ];
+    downloadCsv(`goal-track-history_${from}_${to}.csv`, rows);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* ページヘッダー */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <History size={24} className="text-indigo-600" />
-          履歴・分析
+          {t.history.title}
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          過去の達成状況を振り返って、習慣の傾向を把握できます
+          {t.history.subtitle}
         </p>
       </div>
 
@@ -103,7 +105,7 @@ export default function HistoryPage() {
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
           <TrendingUp size={16} className="text-indigo-600" />
-          今月の達成率推移
+          {t.history.monthlyChart}
         </h2>
         {isMonthlyLoading ? (
           <div className="h-40 bg-slate-50 dark:bg-slate-800 rounded-xl animate-pulse" />
@@ -125,7 +127,7 @@ export default function HistoryPage() {
                 tickFormatter={(v) => `${v}%`}
               />
               <Tooltip
-                formatter={(value: number) => [`${value}%`, '達成率']}
+                formatter={(value: number) => [`${value}%`, t.history.goalStats]}
                 contentStyle={{
                   backgroundColor: '#1e293b',
                   border: 'none',
@@ -147,7 +149,7 @@ export default function HistoryPage() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-center text-slate-400 py-8">データがありません</p>
+          <p className="text-center text-slate-400 py-8">{t.history.noData}</p>
         )}
       </div>
 
@@ -155,7 +157,7 @@ export default function HistoryPage() {
       {monthlyStats && monthlyStats.goal_stats.length > 0 && (
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
           <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
-            今月の目標別達成率
+            {t.history.goalStats}
           </h2>
           <div className="space-y-4">
             {monthlyStats.goal_stats
@@ -172,7 +174,7 @@ export default function HistoryPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       {stat.current_streak >= 3 && (
-                        <Badge variant="warning">🔥 {stat.current_streak}日</Badge>
+                        <Badge variant="warning">{t.history.streakBadge(stat.current_streak)}</Badge>
                       )}
                       <span className="text-sm font-semibold text-slate-900 dark:text-white">
                         {formatRate(stat.completion_rate)}
@@ -195,10 +197,20 @@ export default function HistoryPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
             <CheckCircle2 size={16} className="text-success-600" />
-            達成履歴
+            {t.history.historyList}
           </h2>
 
           <div className="flex flex-wrap gap-2">
+            {/* CSVエクスポート */}
+            <button
+              onClick={handleExportCsv}
+              disabled={!historyData || historyData.length === 0}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Download size={13} />
+              {t.history.exportCsv}
+            </button>
+
             {/* 期間フィルター */}
             <div className="flex rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden text-xs">
               {periodOptions.map((option) => (
@@ -222,7 +234,7 @@ export default function HistoryPage() {
               onChange={(e) => setSelectedGoalId(e.target.value ? Number(e.target.value) : undefined)}
               className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">すべての目標</option>
+              <option value="">{t.history.allGoals}</option>
               {goals?.map((goal) => (
                 <option key={goal.id} value={goal.id}>
                   {goal.title}
@@ -247,7 +259,7 @@ export default function HistoryPage() {
           </div>
         ) : !historyData || historyData.length === 0 ? (
           <p className="text-center text-slate-400 py-8 text-sm">
-            この期間の達成記録がありません
+            {t.history.noHistory}
           </p>
         ) : (
           <div className="space-y-1">
@@ -284,10 +296,11 @@ export default function HistoryPage() {
         {historyData && historyData.length > 0 && (
           <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
             <p className="text-xs text-slate-400">
-              {format(new Date(from), 'M月d日', { locale: ja })} 〜{' '}
-              {format(new Date(to), 'M月d日', { locale: ja })}: 合計{' '}
-              <strong className="text-slate-700 dark:text-slate-300">{historyData.length}件</strong>{' '}
-              達成
+              {t.history.summary(
+                format(new Date(from), 'M月d日', { locale: ja }),
+                format(new Date(to), 'M月d日', { locale: ja }),
+                historyData.length
+              )}
             </p>
           </div>
         )}

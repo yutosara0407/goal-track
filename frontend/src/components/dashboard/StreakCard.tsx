@@ -1,17 +1,16 @@
-/**
- * ストリーク（連続達成日数）カードコンポーネント
- * 各目標の連続達成日数をランキング形式で表示する
- */
+'use client';
+
 import { Flame } from 'lucide-react';
-import { cn, formatStreak } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { StreakInfo } from '@/types';
+import { useLang } from '@/contexts/LangContext';
 
 interface StreakCardProps {
   streaks: StreakInfo[];
 }
 
 export function StreakCard({ streaks }: StreakCardProps) {
-  // ストリークが0の目標は除外して上位5件を表示
+  const { t } = useLang();
   const activeStreaks = streaks.filter((s) => s.streak > 0).slice(0, 5);
 
   if (activeStreaks.length === 0) {
@@ -19,22 +18,20 @@ export function StreakCard({ streaks }: StreakCardProps) {
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <Flame size={16} className="text-orange-400" />
-          継続ストリーク
+          {t.streak.title}
         </h3>
         <p className="text-sm text-slate-400 text-center py-2">
-          まだストリークがありません 🌱
+          {t.streak.empty}
         </p>
       </div>
     );
   }
 
-  const maxStreak = Math.max(...activeStreaks.map((s) => s.streak));
-
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
       <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
         <Flame size={16} className="text-orange-400" />
-        継続ストリーク
+        {t.streak.title}
       </h3>
       <div className="space-y-3">
         {activeStreaks.map((item, index) => (
@@ -67,7 +64,7 @@ export function StreakCard({ streaks }: StreakCardProps) {
             <div className="flex items-center gap-1 flex-shrink-0">
               {item.streak >= 7 && <Flame size={12} className="text-orange-400" />}
               <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                {item.streak}日
+                {item.streak}{t.streak.days}
               </span>
             </div>
           </div>

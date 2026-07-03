@@ -1,38 +1,27 @@
-/**
- * ヘッダーコンポーネント
- * モバイル時のナビゲーションバー兼デスクトップのページタイトルエリア
- */
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, LogOut, Mail } from 'lucide-react';
+import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
-import { useEmailStatus } from '@/hooks/useEmailStatus';
-
-interface NavItem {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
-}
-
-const navItems: NavItem[] = [
-  { href: '/dashboard', label: 'ダッシュボード', icon: <LayoutDashboard size={20} /> },
-  { href: '/goals',     label: '目標管理',       icon: <ListTodo size={20} /> },
-  { href: '/calendar',  label: 'カレンダー',     icon: <CalendarDays size={20} /> },
-  { href: '/history',   label: '履歴・分析',     icon: <History size={20} /> },
-];
+import { useLang } from '@/contexts/LangContext';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { LangToggle } from '@/components/ui/LangToggle';
 
 export function Header() {
   const pathname = usePathname();
   const { logout, user } = useAuth();
-  const { data: emailStatus } = useEmailStatus();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLang();
 
-  // 現在のページ名を取得
-  const currentPage = navItems.find((item) => pathname.startsWith(item.href));
+  const navItems = [
+    { href: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard size={20} /> },
+    { href: '/goals',     label: t.nav.goals,     icon: <ListTodo size={20} /> },
+    { href: '/calendar',  label: t.nav.calendar,  icon: <CalendarDays size={20} /> },
+    { href: '/history',   label: t.nav.history,   icon: <History size={20} /> },
+  ];
 
   return (
     <>
@@ -46,15 +35,19 @@ export function Header() {
             <span className="font-bold text-sm bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">GoalTrack</span>
           </div>
 
-          {/* ハンバーガーメニューボタン */}
-          <button
-            onClick={() => setIsMobileMenuOpen((v) => !v)}
-            className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label={isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* 言語・テーマ + ハンバーガーメニュー */}
+          <div className="flex items-center gap-1">
+            <LangToggle />
+            <ThemeToggle />
+            <button
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label={isMobileMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -110,37 +103,6 @@ export function Header() {
                 <p className="text-xs text-slate-400 truncate">{user?.email}</p>
               </div>
 
-              {/* メール送信残数（モバイル） */}
-              {emailStatus && (
-                <div className="mx-3 mb-2 px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-1.5">
-                      <Mail size={11} className="text-slate-400 shrink-0" />
-                      <span className="text-[10px] text-slate-400">メール送信</span>
-                    </div>
-                    <span className="text-[10px] text-slate-400">
-                      {new Date(emailStatus.reset_at).getMonth() + 1}月末リセット
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                      <div
-                        className={cn(
-                          'h-full rounded-full',
-                          emailStatus.remaining <= 5 ? 'bg-red-400' : emailStatus.remaining <= 10 ? 'bg-amber-400' : 'bg-primary-500'
-                        )}
-                        style={{ width: `${(emailStatus.remaining / emailStatus.limit) * 100}%` }}
-                      />
-                    </div>
-                    <span className={cn(
-                      'text-xs font-medium whitespace-nowrap',
-                      emailStatus.remaining <= 5 ? 'text-red-500' : emailStatus.remaining <= 10 ? 'text-amber-500' : 'text-slate-600 dark:text-slate-300'
-                    )}>
-                      残り {emailStatus.remaining} 通
-                    </span>
-                  </div>
-                </div>
-              )}
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
@@ -149,7 +111,7 @@ export function Header() {
                 className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 transition-colors"
               >
                 <LogOut size={18} className="text-slate-400" />
-                ログアウト
+                {t.nav.logout}
               </button>
             </div>
           </nav>

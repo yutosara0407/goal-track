@@ -114,6 +114,18 @@ class CompletionController extends Controller
     }
 
     /**
+     * 達成記録を削除する（未記録状態に戻す）
+     */
+    public function destroy(Request $request, GoalCompletion $completion): JsonResponse
+    {
+        if ($completion->goal->user_id !== $request->user()->id) {
+            return response()->json(['message' => '権限がありません'], 403);
+        }
+        $completion->delete();
+        return response()->json(null, 204);
+    }
+
+    /**
      * YYYY-MM-DD形式の日付かどうかを検証する
      */
     private function isValidDate(string $date): bool

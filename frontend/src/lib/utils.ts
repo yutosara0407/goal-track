@@ -131,6 +131,27 @@ export function extractErrorMessage(error: unknown): string {
 }
 
 // ============================================================
+// エクスポートユーティリティ
+// ============================================================
+
+/**
+ * 2次元配列をCSVファイルとしてダウンロードする
+ * Excelでの文字化けを防ぐためUTF-8 BOMを付与する
+ */
+export function downloadCsv(filename: string, rows: string[][]): void {
+  const csv = rows
+    .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(','))
+    .join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
 // ストリーク表示ユーティリティ
 // ============================================================
 

@@ -1,7 +1,3 @@
-/**
- * ログインページ
- * メール・パスワードによる認証フォームを提供する
- */
 'use client';
 
 import { useEffect } from 'react';
@@ -14,8 +10,8 @@ import { Target, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginFormData } from '@/types';
+import { useLang } from '@/contexts/LangContext';
 
-// フォームバリデーションスキーマ（Zod）
 const loginSchema = z.object({
   email: z.string().email('有効なメールアドレスを入力してください'),
   password: z.string().min(1, 'パスワードを入力してください'),
@@ -24,9 +20,8 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const { login, isLoading, isAuthenticated, isInitialized } = useAuth();
+  const { t } = useLang();
 
-  // 初期化完了後、認証済みの場合はダッシュボードへリダイレクト
-  // isInitialized のガードにより、localStorage復元直後の誤リダイレクトを防ぐ
   useEffect(() => {
     if (isInitialized && isAuthenticated) {
       router.push('/dashboard');
@@ -58,18 +53,18 @@ export default function LoginPage() {
             <Target size={28} className="text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-violet-400">GoalTrack</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">目標達成管理アプリ</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">{t.auth.appSubtitle}</p>
         </div>
 
         {/* フォームカード */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-indigo-100/50 dark:shadow-black/40 border border-slate-100 dark:border-slate-800 p-8">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">ログイン</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t.auth.loginTitle}</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
             {/* メールアドレス */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                メールアドレス
+                {t.auth.emailLabel}
               </label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -77,7 +72,7 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder={t.auth.emailPlaceholder}
                   {...register('email')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.email}
@@ -91,7 +86,7 @@ export default function LoginPage() {
             {/* パスワード */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                パスワード
+                {t.auth.passwordLabel}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -99,7 +94,7 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   autoComplete="current-password"
-                  placeholder="••••••••"
+                  placeholder={t.auth.passwordPlaceholder}
                   {...register('password')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.password}
@@ -117,18 +112,18 @@ export default function LoginPage() {
               size="lg"
               isLoading={isLoading}
             >
-              ログイン
+              {t.auth.loginButton}
             </Button>
           </form>
 
           {/* 登録リンク */}
           <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
-            アカウントをお持ちでない方は{' '}
+            {t.auth.noAccount}{' '}
             <Link
               href="/register"
               className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
             >
-              新規登録
+              {t.auth.registerLink}
             </Link>
           </p>
         </div>

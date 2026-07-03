@@ -12,7 +12,7 @@ WORKDIR /var/www/html
 
 COPY backend/ .
 
-RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 

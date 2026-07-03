@@ -1,7 +1,3 @@
-/**
- * 新規登録ページ
- * 名前・メール・パスワードによるアカウント作成フォーム
- */
 'use client';
 
 import { useEffect } from 'react';
@@ -14,8 +10,8 @@ import { Target, User, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { RegisterFormData } from '@/types';
+import { useLang } from '@/contexts/LangContext';
 
-// バリデーションスキーマ
 const registerSchema = z
   .object({
     name: z
@@ -37,6 +33,7 @@ const registerSchema = z
 export default function RegisterPage() {
   const router = useRouter();
   const { register: registerUser, isLoading, isAuthenticated, isInitialized } = useAuth();
+  const { t } = useLang();
 
   useEffect(() => {
     if (isInitialized && isAuthenticated) {
@@ -69,18 +66,18 @@ export default function RegisterPage() {
             <Target size={28} className="text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-violet-400">GoalTrack</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">目標達成管理アプリ</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">{t.auth.appSubtitle}</p>
         </div>
 
         {/* フォームカード */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-indigo-100/50 dark:shadow-black/40 border border-slate-100 dark:border-slate-800 p-8">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">新規登録</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">{t.auth.registerTitle}</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
             {/* 名前 */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                お名前
+                {t.auth.nameLabel}
               </label>
               <div className="relative">
                 <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -88,7 +85,7 @@ export default function RegisterPage() {
                   id="name"
                   type="text"
                   autoComplete="name"
-                  placeholder="山田 太郎"
+                  placeholder={t.auth.namePlaceholder}
                   {...register('name')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.name}
@@ -102,7 +99,7 @@ export default function RegisterPage() {
             {/* メールアドレス */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                メールアドレス
+                {t.auth.emailLabel}
               </label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -110,7 +107,7 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder={t.auth.emailPlaceholder}
                   {...register('email')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.email}
@@ -124,7 +121,7 @@ export default function RegisterPage() {
             {/* パスワード */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                パスワード
+                {t.auth.passwordLabel}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -132,7 +129,7 @@ export default function RegisterPage() {
                   id="password"
                   type="password"
                   autoComplete="new-password"
-                  placeholder="8文字以上"
+                  placeholder={t.auth.passwordMin}
                   {...register('password')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.password}
@@ -146,7 +143,7 @@ export default function RegisterPage() {
             {/* パスワード確認 */}
             <div>
               <label htmlFor="password_confirmation" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                パスワード（確認）
+                {t.auth.passwordConfirmLabel}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -154,7 +151,7 @@ export default function RegisterPage() {
                   id="password_confirmation"
                   type="password"
                   autoComplete="new-password"
-                  placeholder="もう一度入力"
+                  placeholder={t.auth.passwordConfirmPlaceholder}
                   {...register('password_confirmation')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
                   aria-invalid={!!errors.password_confirmation}
@@ -174,18 +171,18 @@ export default function RegisterPage() {
               size="lg"
               isLoading={isLoading}
             >
-              アカウントを作成
+              {t.auth.registerButton}
             </Button>
           </form>
 
           {/* ログインリンク */}
           <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
-            既にアカウントをお持ちの方は{' '}
+            {t.auth.hasAccount}{' '}
             <Link
               href="/login"
               className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
             >
-              ログイン
+              {t.auth.loginLink}
             </Link>
           </p>
         </div>

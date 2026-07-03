@@ -16,7 +16,8 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - laravel-storage:/var/www/html/storage
-      - laravel-db:/var/www/html/database
+      # database/ (not a subdir) would shadow the migrations/ shipped in each new image build
+      - laravel-db:/var/www/html/database/state
     env_file:
       - ./backend/.env
     restart: unless-stopped

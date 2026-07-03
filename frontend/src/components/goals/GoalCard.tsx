@@ -1,7 +1,3 @@
-/**
- * 目標カードコンポーネント
- * 目標一覧で各目標を表示するカードUI
- */
 'use client';
 
 import { useState } from 'react';
@@ -9,6 +5,7 @@ import { MoreVertical, Edit2, Archive, Trash2, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Goal } from '@/types';
 import { Badge } from '@/components/ui/Badge';
+import { useLang } from '@/contexts/LangContext';
 
 interface GoalCardProps {
   goal: Goal;
@@ -19,6 +16,7 @@ interface GoalCardProps {
 
 export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useLang();
 
   return (
     <div
@@ -40,7 +38,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
             {goal.title}
           </h3>
           {!goal.is_active && (
-            <Badge variant="neutral">アーカイブ</Badge>
+            <Badge variant="neutral">{t.goals.archivedLabel}</Badge>
           )}
         </div>
         {goal.description && (
@@ -71,7 +69,6 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
         {/* ドロップダウンメニュー */}
         {isMenuOpen && (
           <>
-            {/* クリック外で閉じるオーバーレイ */}
             <div
               className="fixed inset-0 z-10"
               onClick={() => setIsMenuOpen(false)}
@@ -86,7 +83,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
                 className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 <Edit2 size={14} />
-                編集
+                {t.goals.edit}
               </button>
               <button
                 onClick={() => {
@@ -96,7 +93,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
                 className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 {goal.is_active ? <Archive size={14} /> : <RotateCcw size={14} />}
-                {goal.is_active ? 'アーカイブ' : '再開'}
+                {goal.is_active ? t.goals.archive : t.goals.restore}
               </button>
               <div className="my-1 border-t border-slate-100 dark:border-slate-700" />
               <button
@@ -107,7 +104,7 @@ export function GoalCard({ goal, onEdit, onDelete, onToggleActive }: GoalCardPro
                 className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors"
               >
                 <Trash2 size={14} />
-                削除
+                {t.goals.delete}
               </button>
             </div>
           </>

@@ -1,7 +1,3 @@
-/**
- * 目標管理ページ
- * 目標の追加・編集・削除・アーカイブ操作ができる
- */
 'use client';
 
 import { useState } from 'react';
@@ -13,37 +9,32 @@ import { GoalForm } from '@/components/goals/GoalForm';
 import { CardSkeleton } from '@/components/ui/LoadingSkeleton';
 import { useGoals, useGoalMutations } from '@/hooks/useGoals';
 import { Goal, GoalFormData } from '@/types';
+import { useLang } from '@/contexts/LangContext';
 
 export default function GoalsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [deletingGoal, setDeletingGoal] = useState<Goal | null>(null);
   const [showInactive, setShowInactive] = useState(false);
+  const { t } = useLang();
 
-  // データ取得
   const { data: goals, isLoading } = useGoals(showInactive);
-
-  // CRUD操作フック
   const { createMutation, updateMutation, deleteMutation, archiveMutation } = useGoalMutations();
 
-  // アクティブ・アーカイブ済みを分類
   const activeGoals = goals?.filter((g) => g.is_active) ?? [];
   const inactiveGoals = goals?.filter((g) => !g.is_active) ?? [];
 
-  /** 目標作成フォーム送信 */
   const handleCreate = async (data: GoalFormData) => {
     await createMutation.mutateAsync(data);
     setIsCreateModalOpen(false);
   };
 
-  /** 目標更新フォーム送信 */
   const handleUpdate = async (data: GoalFormData) => {
     if (!editingGoal) return;
     await updateMutation.mutateAsync({ id: editingGoal.id, data });
     setEditingGoal(null);
   };
 
-  /** 目標削除確認 */
   const handleDeleteConfirm = async () => {
     if (!deletingGoal) return;
     await deleteMutation.mutateAsync(deletingGoal.id);
@@ -57,17 +48,17 @@ export default function GoalsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <ListTodo size={24} className="text-indigo-600" />
-            目標管理
+            {t.goals.title}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            日々クリアしたい目標を登録・管理できます
+            {t.goals.subtitle}
           </p>
         </div>
         <Button
           onClick={() => setIsCreateModalOpen(true)}
           leftIcon={<Plus size={16} />}
         >
-          目標を追加
+          {t.goals.add}
         </Button>
       </div>
 
@@ -82,21 +73,21 @@ export default function GoalsPage() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
-                アクティブ ({activeGoals.length})
+                {t.goals.active} ({activeGoals.length})
               </h2>
             </div>
 
             {activeGoals.length === 0 ? (
               <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 border border-slate-100 dark:border-slate-800 shadow-sm text-center">
                 <div className="text-5xl mb-3">🌱</div>
-                <p className="text-slate-600 dark:text-slate-400 font-medium">目標がありません</p>
-                <p className="text-sm text-slate-400 mt-1">「目標を追加」ボタンから最初の目標を登録しましょう</p>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">{t.goals.emptyTitle}</p>
+                <p className="text-sm text-slate-400 mt-1">{t.goals.emptySubtitle}</p>
                 <Button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="mt-4"
                   leftIcon={<Plus size={16} />}
                 >
-                  最初の目標を追加
+                  {t.goals.addFirst}
                 </Button>
               </div>
             ) : (
@@ -119,13 +110,13 @@ export default function GoalsPage() {
             <section>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
-                  アーカイブ済み ({inactiveGoals.length})
+                  {t.goals.archived} ({inactiveGoals.length})
                 </h2>
                 <button
                   onClick={() => setShowInactive((v) => !v)}
                   className="text-xs text-primary-600 hover:underline"
                 >
-                  {showInactive ? '非表示' : '表示'}
+                  {showInactive ? t.goals.hide : t.goals.show}
                 </button>
               </div>
               {showInactive && (
@@ -150,7 +141,7 @@ export default function GoalsPage() {
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        title="目標を追加"
+        title={t.goals.createTitle}
       >
         <GoalForm
           onSubmit={handleCreate}
@@ -163,7 +154,7 @@ export default function GoalsPage() {
       <Modal
         isOpen={!!editingGoal}
         onClose={() => setEditingGoal(null)}
-        title="目標を編集"
+        title={t.goals.editTitle}
       >
         <GoalForm
           goal={editingGoal ?? undefined}
@@ -177,22 +168,22 @@ export default function GoalsPage() {
       <Modal
         isOpen={!!deletingGoal}
         onClose={() => setDeletingGoal(null)}
-        title="目標を削除"
+        title={t.goals.deleteTitle}
         size="sm"
       >
         <div className="space-y-4">
           <div className="p-3 rounded-xl bg-danger-50 dark:bg-danger-900/20 border border-danger-100 dark:border-danger-800">
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              「<strong>{deletingGoal?.title}</strong>」を削除します。
+              {deletingGoal && t.goals.deleteMessage(deletingGoal.title)}
               <br />
               <span className="text-danger-600 dark:text-danger-400">
-                関連する達成記録もすべて削除されます。この操作は取り消せません。
+                {t.goals.deleteWarning}
               </span>
             </p>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={() => setDeletingGoal(null)} className="flex-1">
-              キャンセル
+              {t.goals.cancel}
             </Button>
             <Button
               variant="danger"
@@ -200,7 +191,7 @@ export default function GoalsPage() {
               isLoading={deleteMutation.isPending}
               className="flex-1"
             >
-              削除する
+              {t.goals.doDelete}
             </Button>
           </div>
         </div>

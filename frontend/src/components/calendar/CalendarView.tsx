@@ -1,7 +1,3 @@
-/**
- * カレンダービューコンポーネント
- * 月次カレンダーで各日の目標達成状況をヒートマップ形式で表示する
- */
 'use client';
 
 import { useState } from 'react';
@@ -22,6 +18,7 @@ import { cn, formatRate, getRateBgClass } from '@/lib/utils';
 import { statsApi } from '@/lib/api';
 import { CalendarDay, GoalMonthlyStats } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { useLang } from '@/contexts/LangContext';
 
 const WEEKDAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -29,14 +26,16 @@ interface DayDetailProps {
   day: CalendarDay | undefined;
   date: Date;
   goalStats: GoalMonthlyStats[];
+  selectPrompt: string;
+  achievedOf: (done: number, total: number) => string;
+  achieveRate: (rate: string) => string;
 }
 
-/** 選択した日の詳細表示 */
-function DayDetail({ day, date, goalStats }: DayDetailProps) {
+function DayDetail({ day, date, goalStats, selectPrompt, achievedOf, achieveRate }: DayDetailProps) {
   if (!day) {
     return (
       <div className="text-sm text-gray-400 text-center py-6">
-        日付を選択すると詳細が表示されます
+        {selectPrompt}
       </div>
     );
   }
@@ -48,7 +47,7 @@ function DayDetail({ day, date, goalStats }: DayDetailProps) {
           {format(date, 'M月d日(E)', { locale: ja })}
         </p>
         <p className="text-sm text-gray-500">
-          {day.completed_count}/{day.total_goals}個 達成 ({formatRate(day.completion_rate)})
+          {achievedOf(day.completed_count, day.total_goals)} ({achieveRate(formatRate(day.completion_rate))})
         </p>
       </div>
       <ProgressBar value={day.completion_rate} size="md" showLabel />
@@ -59,25 +58,20 @@ function DayDetail({ day, date, goalStats }: DayDetailProps) {
 export function CalendarView() {
   const now = new Date();
   const [currentYear, setCurrentYear] = useState(now.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(now.getMonth() + 1); // 1-12
+  const [currentMonth, setCurrentMonth] = useState(now.getMonth() + 1);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const { t } = useLang();
 
-  // 月次統計データを取得
   const { data, isLoading } = useQuery({
     queryKey: ['stats', 'monthly', currentYear, currentMonth],
     queryFn: () => statsApi.monthly(currentYear, currentMonth),
     staleTime: 0,
   });
 
-  // カレンダーの日付グリッドを生成
   const firstDay = startOfMonth(new Date(currentYear, currentMonth - 1));
   const lastDay = endOfMonth(firstDay);
   const daysInMonth = eachDayOfInterval({ start: firstDay, end: lastDay });
-
-  // 月の始まりの曜日（0=日曜）
   const startDayOfWeek = getDay(firstDay);
-
-  // 日付ごとのデータをマップ化（O(1)アクセス）
   const dayDataMap = new Map(data?.days.map((d) => [d.date, d]) ?? []);
 
   const handlePrevMonth = () => {
@@ -91,7 +85,6 @@ export function CalendarView() {
   };
 
   const handleNextMonth = () => {
-    // 未来の月には進めない
     if (currentYear === now.getFullYear() && currentMonth === now.getMonth() + 1) return;
     if (currentMonth === 12) {
       setCurrentYear((y) => y + 1);
@@ -115,7 +108,7 @@ export function CalendarView() {
         <button
           onClick={handlePrevMonth}
           className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          aria-label="前の月"
+          aria-label={t.calendar.prev}
         >
           <ChevronLeft size={20} className="text-gray-600 dark:text-gray-300" />
         </button>
@@ -128,7 +121,7 @@ export function CalendarView() {
           onClick={handleNextMonth}
           disabled={isNextDisabled}
           className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="次の月"
+          aria-label={t.calendar.next}
         >
           <ChevronRight size={20} className="text-gray-600 dark:text-gray-300" />
         </button>
@@ -155,12 +148,10 @@ export function CalendarView() {
 
         {/* 日付セル */}
         <div className="grid grid-cols-7 gap-1">
-          {/* 月の始まりまでの空白セル */}
           {Array.from({ length: startDayOfWeek }).map((_, i) => (
             <div key={`empty-${i}`} />
           ))}
 
-          {/* 各日のセル */}
           {daysInMonth.map((date) => {
             const dateStr = format(date, 'yyyy-MM-dd');
             const dayData = dayDataMap.get(dateStr);
@@ -180,30 +171,25 @@ export function CalendarView() {
                   isFuture && 'opacity-30 cursor-not-allowed',
                   !isFuture && 'hover:ring-2 hover:ring-primary-400 cursor-pointer',
                   isSelected && 'ring-2 ring-primary-600 dark:ring-primary-400',
-                  // ヒートマップカラー（達成率に応じた背景色）
-                  hasData && !isFuture && dayData!.completion_rate > 0
+                  hasData && !isFuture && dayData!.completion_rate >= 0.5
                     ? 'text-white'
-                    : 'text-gray-600 dark:text-gray-400',
+                    : 'text-gray-700 dark:text-gray-300',
                 )}
                 style={
-                  hasData && !isFuture
+                  hasData && !isFuture && dayData!.completion_rate > 0
                     ? {
-                        backgroundColor: dayData!.completion_rate > 0
-                          ? `color-mix(in srgb, #6366f1 ${Math.round(dayData!.completion_rate * 80 + 20)}%, transparent)`
-                          : undefined,
+                        backgroundColor: `rgba(99, 102, 241, ${(dayData!.completion_rate * 0.8 + 0.2).toFixed(2)})`,
                       }
                     : undefined
                 }
-                aria-label={`${format(date, 'M月d日')}: ${dayData ? `${formatRate(dayData.completion_rate)}達成` : '記録なし'}`}
+                aria-label={`${format(date, 'M月d日')}: ${dayData ? `${formatRate(dayData.completion_rate)}達成` : t.calendar.noRecord}`}
                 aria-pressed={isSelected}
               >
                 <span className={cn(
                   isTodayDate && 'underline underline-offset-2 font-bold',
-                  hasData && dayData!.completion_rate > 0 ? 'text-white' : ''
                 )}>
                   {date.getDate()}
                 </span>
-                {/* 達成率インジケータードット */}
                 {hasData && dayData!.completion_rate === 1 && (
                   <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-white/60" />
                 )}
@@ -214,7 +200,7 @@ export function CalendarView() {
 
         {/* 凡例 */}
         <div className="mt-4 flex items-center gap-3 justify-end">
-          <span className="text-xs text-gray-400">達成率:</span>
+          <span className="text-xs text-gray-400">{t.calendar.rateLabel}:</span>
           {[0, 0.25, 0.5, 0.75, 1.0].map((rate) => (
             <div
               key={rate}
@@ -225,7 +211,7 @@ export function CalendarView() {
                 style={{
                   backgroundColor: rate === 0
                     ? '#f1f5f9'
-                    : `color-mix(in srgb, #6366f1 ${Math.round(rate * 80 + 20)}%, transparent)`,
+                    : `rgba(99, 102, 241, ${(rate * 0.8 + 0.2).toFixed(2)})`,
                 }}
               />
               <span className="text-xs text-gray-400">{formatRate(rate)}</span>
@@ -237,12 +223,15 @@ export function CalendarView() {
       {/* 選択日の詳細 */}
       <div className="card p-4">
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-          日別詳細
+          {t.calendar.dayDetail}
         </h3>
         <DayDetail
           day={selectedDayData}
           date={selectedDateObj || new Date()}
           goalStats={data?.goal_stats ?? []}
+          selectPrompt={t.calendar.selectPrompt}
+          achievedOf={t.calendar.achievedOf}
+          achieveRate={t.calendar.achieveRate}
         />
       </div>
 
@@ -250,7 +239,7 @@ export function CalendarView() {
       {data && data.goal_stats.length > 0 && (
         <div className="card p-4">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-            目標別達成状況
+            {t.calendar.goalStats}
           </h3>
           <div className="space-y-3">
             {data.goal_stats.map((stat) => (

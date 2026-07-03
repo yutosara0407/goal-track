@@ -1,7 +1,3 @@
-/**
- * 目標作成・編集フォームコンポーネント
- * モーダル内に表示される目標のCRUDフォーム
- */
 'use client';
 
 import { useEffect } from 'react';
@@ -11,8 +7,8 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/Button';
 import { GOAL_COLORS } from '@/lib/utils';
 import { Goal, GoalFormData } from '@/types';
+import { useLang } from '@/contexts/LangContext';
 
-// バリデーションスキーマ
 const goalSchema = z.object({
   title: z
     .string()
@@ -26,7 +22,6 @@ const goalSchema = z.object({
 });
 
 interface GoalFormProps {
-  /** 編集対象の目標（新規作成時はundefined） */
   goal?: Goal;
   onSubmit: (data: GoalFormData) => void;
   onCancel: () => void;
@@ -35,6 +30,7 @@ interface GoalFormProps {
 
 export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: GoalFormProps) {
   const isEditing = !!goal;
+  const { t } = useLang();
 
   const {
     register,
@@ -54,7 +50,6 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
 
   const selectedColor = watch('color');
 
-  // 編集対象が変わったらフォームをリセット
   useEffect(() => {
     reset({
       title: goal?.title || '',
@@ -68,12 +63,12 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
       {/* タイトル */}
       <div>
         <label htmlFor="goal-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-          タイトル <span className="text-danger-500">*</span>
+          {t.goals.formTitle} <span className="text-danger-500">*</span>
         </label>
         <input
           id="goal-title"
           type="text"
-          placeholder="例: 毎日30分読書する"
+          placeholder={t.goals.formTitlePlaceholder}
           {...register('title')}
           className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           aria-invalid={!!errors.title}
@@ -87,11 +82,11 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
       {/* 説明 */}
       <div>
         <label htmlFor="goal-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-          説明（任意）
+          {t.goals.formDesc}
         </label>
         <textarea
           id="goal-description"
-          placeholder="目標についての詳細や、達成したい理由など..."
+          placeholder={t.goals.formDescPlaceholder}
           {...register('description')}
           rows={3}
           className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
@@ -105,7 +100,7 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
       {/* カラー選択 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          テーマカラー
+          {t.goals.formColor}
         </label>
         <div className="flex flex-wrap gap-2">
           {GOAL_COLORS.map((color) => (
@@ -118,7 +113,6 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
               aria-label={`カラー ${color} を選択`}
               aria-pressed={selectedColor === color}
             >
-              {/* 選択中のカラーにチェックマークを表示 */}
               {selectedColor === color && (
                 <span className="flex items-center justify-center w-full h-full">
                   <svg
@@ -141,7 +135,6 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
           ))}
         </div>
 
-        {/* 選択中カラーのプレビュー */}
         <div className="mt-3 flex items-center gap-2">
           <div
             className="w-5 h-5 rounded-md"
@@ -159,14 +152,14 @@ export function GoalForm({ goal, onSubmit, onCancel, isSubmitting = false }: Goa
           onClick={onCancel}
           className="flex-1"
         >
-          キャンセル
+          {t.goals.cancel}
         </Button>
         <Button
           type="submit"
           className="flex-1"
           isLoading={isSubmitting}
         >
-          {isEditing ? '更新する' : '目標を追加'}
+          {isEditing ? t.goals.submitEdit : t.goals.submitCreate}
         </Button>
       </div>
     </form>

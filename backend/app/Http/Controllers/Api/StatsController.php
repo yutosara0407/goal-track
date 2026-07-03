@@ -108,10 +108,11 @@ class StatsController extends Controller
         }
 
         // 対象月の全達成記録を一括取得（N+1防止）
+        // date列はCarbon castのため groupBy('date') だと "Y-m-d H:i:s" キーになる→明示的にY-m-dでグループ化
         $completions = GoalCompletion::whereIn('goal_id', $goalIds)
             ->whereBetween('date', [$from, $to])
             ->get()
-            ->groupBy('date'); // 日付ごとにグループ化
+            ->groupBy(fn($c) => $c->date->format('Y-m-d'));
 
         // 月の各日のデータを生成
         $days = [];

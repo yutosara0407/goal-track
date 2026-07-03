@@ -79,6 +79,44 @@ export function useToggleCompletion() {
 }
 
 /**
+ * 達成記録を削除するフック（未記録状態に戻す）
+ */
+export function useRemoveCompletion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id }: { id: number; goal_id: number; date: string }) =>
+      completionsApi.remove(id),
+    onMutate: async ({ goal_id, date }) => {
+      const queryKey = [...COMPLETIONS_QUERY_KEY, 'day', date];
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData(queryKey, (old: unknown) => {
+        if (!old || typeof old !== 'object') return old;
+        const data = old as { items: Array<{ goal: { id: number }; completed: boolean; completion_id: number | null }> };
+        return {
+          ...data,
+          items: data.items.map((item) =>
+            item.goal.id === goal_id
+              ? { ...item, completed: false, completion_id: null }
+              : item
+          ),
+        };
+      });
+      return { previousData };
+    },
+    onError: (_err, { date }, context) => {
+      const queryKey = [...COMPLETIONS_QUERY_KEY, 'day', date];
+      if (context?.previousData) queryClient.setQueryData(queryKey, context.previousData);
+    },
+    onSettled: (_data, _err, { date }) => {
+      queryClient.invalidateQueries({ queryKey: [...COMPLETIONS_QUERY_KEY, 'day', date] });
+      queryClient.invalidateQueries({ queryKey: ['stats', 'overview'] });
+      queryClient.invalidateQueries({ queryKey: ['stats', 'monthly'] });
+    },
+  });
+}
+
+/**
  * 達成履歴を取得するフック
  */
 export function useCompletionHistory(from?: string, to?: string, goalId?: number) {

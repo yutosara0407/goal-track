@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompletionController;
-use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\StatsController;
 use Illuminate\Support\Facades\Route;
@@ -35,11 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/completions', [CompletionController::class, 'index']);       // 指定日の達成状況一覧
     Route::post('/completions/toggle', [CompletionController::class, 'toggle']); // 達成トグル
     Route::get('/completions/history', [CompletionController::class, 'history']); // 履歴取得
+    Route::delete('/completions/{completion}', [CompletionController::class, 'destroy']); // 達成記録削除
 
     // 統計・分析
     Route::get('/stats/overview', [StatsController::class, 'overview']); // ダッシュボード用サマリー
     Route::get('/stats/monthly', [StatsController::class, 'monthly']);   // 月次カレンダーデータ
-
-    // メール送信状況
-    Route::get('/email/status', [EmailController::class, 'status']);
 });

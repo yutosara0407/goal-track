@@ -2,8 +2,9 @@
 set -e
 
 # SQLite DBが存在しない場合は作成
-touch /var/www/html/database/database.sqlite
-chown www-data:www-data /var/www/html/database/database.sqlite
+mkdir -p /var/www/html/database/state
+touch /var/www/html/database/state/database.sqlite
+chown -R www-data:www-data /var/www/html/database/state
 
 # マイグレーション実行
 php /var/www/html/artisan migrate --force
