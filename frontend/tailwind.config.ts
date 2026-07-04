@@ -43,9 +43,12 @@ const config: Config = {
       },
       // カスタムアニメーション
       animation: {
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'bounce-soft': 'bounceSoft 0.5s ease-out',
+        'fade-in':    'fadeIn 0.25s ease-out',
+        'slide-up':   'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in':   'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'bounce-soft': 'bounceSoft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'check-pop':  'checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'shimmer':    'shimmer 1.8s infinite',
       },
       keyframes: {
         fadeIn: {
@@ -53,13 +56,26 @@ const config: Config = {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%':   { transform: 'translateY(16px)', opacity: '0' },
+          '0%':   { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideIn: {
+          '0%':   { transform: 'translateX(-20px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
         },
         bounceSoft: {
           '0%':   { transform: 'scale(1)' },
           '50%':  { transform: 'scale(1.08)' },
           '100%': { transform: 'scale(1)' },
+        },
+        checkPop: {
+          '0%':   { transform: 'scale(0.6)', opacity: '0' },
+          '70%':  { transform: 'scale(1.15)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        shimmer: {
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
     },

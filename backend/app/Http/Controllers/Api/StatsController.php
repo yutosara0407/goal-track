@@ -104,7 +104,7 @@ class StatsController extends Controller
         $goalCount = $goals->count();
 
         if ($goalCount === 0) {
-            return response()->json(['year' => $year, 'month' => $month, 'days' => [], 'goals' => []]);
+            return response()->json(['year' => $year, 'month' => $month, 'days' => [], 'goal_stats' => []]);
         }
 
         // 対象月の全達成記録を一括取得（N+1防止）
