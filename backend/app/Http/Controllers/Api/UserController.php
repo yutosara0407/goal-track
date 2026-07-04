@@ -179,26 +179,30 @@ class UserController extends Controller
             ->distinct('date')
             ->count('date');
 
+        $activeGoals = $user->activeGoals()->get();
+
         // アクティブ目標の現在ストリークの最大値
-        $bestCurrentStreak = $user->activeGoals()->get()
+        $bestCurrentStreak = $activeGoals
             ->map(fn($goal) => $goal->currentStreak())
             ->max() ?? 0;
 
         // 今月の達成率（StatsController::overviewと同じ算式）
-        $goalCount = $user->activeGoals()->count();
-        $monthDays = now()->day;
+        // 分母は各目標が存在していた日数の合計（作成前の日は数えない）
+        $monthStart = now()->startOfMonth()->toDateString();
+        $today = now()->toDateString();
+        $monthDenominator = $activeGoals->sum(fn($goal) => $goal->eligibleDaysBetween($monthStart, $today));
         $monthCompleted = GoalCompletion::whereIn('goal_id', $goalIds)
-            ->whereBetween('date', [now()->startOfMonth()->toDateString(), now()->toDateString()])
+            ->whereBetween('date', [$monthStart, $today])
             ->where('completed', true)
             ->count();
 
         return [
-            'active_goals'          => $goalCount,
+            'active_goals'          => $activeGoals->count(),
             'total_completed'       => $totalCompleted,
             'active_days'           => $activeDays,
             'best_current_streak'   => $bestCurrentStreak,
-            'month_completion_rate' => ($goalCount * $monthDays) > 0
-                ? round($monthCompleted / ($goalCount * $monthDays), 4) : 0,
+            'month_completion_rate' => $monthDenominator > 0
+                ? round($monthCompleted / $monthDenominator, 4) : 0,
         ];
     }
 

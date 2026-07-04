@@ -60,7 +60,29 @@ class Goal extends Model
     }
 
     /**
-     * 指定期間の達成率を計算する
+     * この目標が集計対象になる開始日（= 作成日）
+     * 作成前の日付を「未達成」として数えないための基準
+     */
+    public function startDate(): string
+    {
+        return $this->created_at->toDateString();
+    }
+
+    /**
+     * 指定期間のうち、この目標が存在していた日数を返す
+     * （作成日より前の日は集計対象外）
+     */
+    public function eligibleDaysBetween(string $from, string $to): int
+    {
+        $start = max($from, $this->startDate());
+        if ($start > $to) {
+            return 0;
+        }
+        return \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($to)) + 1;
+    }
+
+    /**
+     * 指定期間の達成率を計算する（目標が存在していた日数が分母）
      *
      * @param string $from 開始日
      * @param string $to 終了日
@@ -68,7 +90,7 @@ class Goal extends Model
      */
     public function completionRateForPeriod(string $from, string $to): float
     {
-        $totalDays = \Carbon\Carbon::parse($from)->diffInDays(\Carbon\Carbon::parse($to)) + 1;
+        $totalDays = $this->eligibleDaysBetween($from, $to);
         $completedDays = $this->completions()
             ->whereBetween('date', [$from, $to])
             ->where('completed', true)

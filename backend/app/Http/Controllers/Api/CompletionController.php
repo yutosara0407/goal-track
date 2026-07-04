@@ -31,8 +31,12 @@ class CompletionController extends Controller
             return response()->json(['message' => '無効な日付です'], 422);
         }
 
-        // ユーザーのアクティブな目標を取得
-        $goals = $request->user()->activeGoals()->orderBy('created_at')->get();
+        // ユーザーのアクティブな目標のうち、指定日時点で存在していたものだけを取得
+        // （後から追加した目標が過去の日に「未達成」として現れないようにする）
+        $goals = $request->user()->activeGoals()
+            ->whereDate('created_at', '<=', $date)
+            ->orderBy('created_at')
+            ->get();
 
         // 各目標の達成記録を取得（DBへのN+1クエリを防ぐためEagerLoading）
         $completions = GoalCompletion::whereIn('goal_id', $goals->pluck('id'))

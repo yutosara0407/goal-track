@@ -47,15 +47,16 @@ class StatsController extends Controller
             ->where('completed', true)
             ->count();
 
-        // 今週の達成率（目標数 × 経過日数 が分母）
-        $weekDays = now()->dayOfWeek ?: 7; // 0=日曜→7に変換
+        // 今週の達成率
+        // 分母は「各目標が存在していた日数」の合計（後から追加した目標の作成前の日を数えない）
+        $weekDenominator = $goals->sum(fn(Goal $g) => $g->eligibleDaysBetween($weekStart, $today));
         $weekCompleted = GoalCompletion::whereIn('goal_id', $goalIds)
             ->whereBetween('date', [$weekStart, $today])
             ->where('completed', true)
             ->count();
 
-        // 今月の達成率
-        $monthDays = now()->day;
+        // 今月の達成率（同上）
+        $monthDenominator = $goals->sum(fn(Goal $g) => $g->eligibleDaysBetween($monthStart, $today));
         $monthCompleted = GoalCompletion::whereIn('goal_id', $goalIds)
             ->whereBetween('date', [$monthStart, $today])
             ->where('completed', true)
@@ -75,10 +76,10 @@ class StatsController extends Controller
             'total_goals'           => $user->goals()->count(),
             'active_goals'          => $goalCount,
             'today_completion_rate' => $goalCount > 0 ? round($todayCompleted / $goalCount, 4) : 0,
-            'week_completion_rate'  => ($goalCount * $weekDays) > 0
-                ? round($weekCompleted / ($goalCount * $weekDays), 4) : 0,
-            'month_completion_rate' => ($goalCount * $monthDays) > 0
-                ? round($monthCompleted / ($goalCount * $monthDays), 4) : 0,
+            'week_completion_rate'  => $weekDenominator > 0
+                ? round($weekCompleted / $weekDenominator, 4) : 0,
+            'month_completion_rate' => $monthDenominator > 0
+                ? round($monthCompleted / $monthDenominator, 4) : 0,
             'today_completed_count' => $todayCompleted,
             'current_streaks'       => $streaks,
         ]);
@@ -128,35 +129,43 @@ class StatsController extends Controller
                 continue;
             }
 
+            // その日時点で存在していた目標だけを分母にする
+            $dayGoalCount = $goals->filter(fn(Goal $g) => $g->startDate() <= $dateStr)->count();
+
             $dayCompletions = $completions->get($dateStr, collect());
             $completedCount = $dayCompletions->where('completed', true)->count();
 
             $days[] = [
                 'date'            => $dateStr,
                 'completed_count' => $completedCount,
-                'total_goals'     => $goalCount,
-                'completion_rate' => round($completedCount / $goalCount, 4),
+                'total_goals'     => $dayGoalCount,
+                'completion_rate' => $dayGoalCount > 0 ? round($completedCount / $dayGoalCount, 4) : 0,
             ];
 
             $current->addDay();
         }
 
-        // 目標ごとの月次統計
-        $goalStats = $goals->map(function (Goal $goal) use ($completions, $from, $to) {
-            $goalCompletions = $completions->flatten()
-                ->where('goal_id', $goal->id);
+        // 目標ごとの月次統計（対象月に存在していなかった目標は含めない）
+        $periodEnd = min($today, $to);
+        $goalStats = $goals
+            ->filter(fn(Goal $g) => $g->startDate() <= $periodEnd)
+            ->values()
+            ->map(function (Goal $goal) use ($completions, $from, $periodEnd) {
+                $goalCompletions = $completions->flatten()
+                    ->where('goal_id', $goal->id);
 
-            $completedDays = $goalCompletions->where('completed', true)->count();
-            $totalDays = Carbon::parse($from)->diffInDays(min(now()->toDateString(), $to)) + 1;
+                $completedDays = $goalCompletions->where('completed', true)->count();
+                // 分母は目標が存在していた日数のみ
+                $totalDays = $goal->eligibleDaysBetween($from, $periodEnd);
 
-            return [
-                'goal'            => $goal,
-                'completed_days'  => $completedDays,
-                'total_days'      => $totalDays,
-                'completion_rate' => $totalDays > 0 ? round($completedDays / $totalDays, 4) : 0,
-                'current_streak'  => $goal->currentStreak(),
-            ];
-        });
+                return [
+                    'goal'            => $goal,
+                    'completed_days'  => $completedDays,
+                    'total_days'      => $totalDays,
+                    'completion_rate' => $totalDays > 0 ? round($completedDays / $totalDays, 4) : 0,
+                    'current_streak'  => $goal->currentStreak(),
+                ];
+            });
 
         return response()->json([
             'year'       => $year,

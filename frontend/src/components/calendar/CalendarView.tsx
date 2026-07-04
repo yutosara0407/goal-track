@@ -27,11 +27,12 @@ interface DayDetailProps {
   date: Date;
   goalStats: GoalMonthlyStats[];
   selectPrompt: string;
+  noRecord: string;
   achievedOf: (done: number, total: number) => string;
   achieveRate: (rate: string) => string;
 }
 
-function DayDetail({ day, date, goalStats, selectPrompt, achievedOf, achieveRate }: DayDetailProps) {
+function DayDetail({ day, date, goalStats, selectPrompt, noRecord, achievedOf, achieveRate }: DayDetailProps) {
   if (!day) {
     return (
       <div className="text-sm text-gray-400 text-center py-6">
@@ -47,10 +48,13 @@ function DayDetail({ day, date, goalStats, selectPrompt, achievedOf, achieveRate
           {format(date, 'M月d日(E)', { locale: ja })}
         </p>
         <p className="text-sm text-gray-500">
-          {achievedOf(day.completed_count, day.total_goals)} ({achieveRate(formatRate(day.completion_rate))})
+          {/* その日に存在していた目標がない場合は「記録なし」 */}
+          {day.total_goals === 0
+            ? noRecord
+            : `${achievedOf(day.completed_count, day.total_goals)} (${achieveRate(formatRate(day.completion_rate))})`}
         </p>
       </div>
-      <ProgressBar value={day.completion_rate} size="md" showLabel />
+      {day.total_goals > 0 && <ProgressBar value={day.completion_rate} size="md" showLabel />}
     </div>
   );
 }
@@ -230,6 +234,7 @@ export function CalendarView() {
           date={selectedDateObj || new Date()}
           goalStats={data?.goal_stats ?? []}
           selectPrompt={t.calendar.selectPrompt}
+          noRecord={t.calendar.noRecord}
           achievedOf={t.calendar.achievedOf}
           achieveRate={t.calendar.achieveRate}
         />
