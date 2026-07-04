@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompletionController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\StatsController;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 // 認証不要のルート
+// ブルートフォース対策として、IPごとの試行回数をthrottleで制限する
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->middleware('throttle:password-email');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:password-reset');
 });
 
 // 認証必須のルート（Bearerトークンが必要）
@@ -26,6 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // 認証ユーザー情報
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    // アカウント管理
+    Route::put('/auth/profile', [AccountController::class, 'updateProfile']);     // プロフィール更新
+    Route::put('/auth/password', [AccountController::class, 'updatePassword']);   // パスワード変更
+    Route::delete('/auth/account', [AccountController::class, 'destroy']);        // 退会
 
     // 目標のCRUD
     Route::apiResource('goals', GoalController::class);

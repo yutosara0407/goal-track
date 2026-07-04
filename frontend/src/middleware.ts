@@ -8,14 +8,15 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 
-/** 認証不要なパス（パブリックルート） */
-const PUBLIC_PATHS = ['/', '/login', '/register'];
+/** 認証不要なパス（パブリックルート）。'/'は完全一致、それ以外は前方一致で判定する */
+const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/terms', '/privacy'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // パブリックパスはそのまま通す
-  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+  // （'/' をstartsWithで判定すると全パスが一致しガードが無効になるため完全一致にする）
+  if (pathname === '/' || PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }
 
@@ -24,7 +25,7 @@ export function middleware(request: NextRequest) {
   // ここではCookieに保存した認証フラグで判断する
   const isAuthenticated = request.cookies.has('goal_app_auth');
 
-  if (!isAuthenticated && !PUBLIC_PATHS.includes(pathname)) {
+  if (!isAuthenticated) {
     // 未認証の場合はログインページへリダイレクト
     const loginUrl = new URL('/login', request.url);
     // ログイン後に元のページへ戻れるようにリダイレクト先を保存

@@ -6,14 +6,19 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import {
   AuthResponse,
   DayCompletions,
+  ForgotPasswordFormData,
   Goal,
   GoalCompletion,
   GoalFormData,
   LoginFormData,
+  MessageResponse,
   MonthlyStatsResponse,
   OverviewStats,
   RegisterFormData,
+  ResetPasswordFormData,
   ToggleCompletionData,
+  UpdatePasswordFormData,
+  UpdateProfileFormData,
   User,
 } from '@/types';
 
@@ -99,6 +104,36 @@ export const authApi = {
   /** 認証済みユーザー情報の取得 */
   me: async (): Promise<User> => {
     const res = await apiClient.get<User>('/auth/me');
+    return res.data;
+  },
+
+  /** パスワード再設定メールの送信依頼 */
+  forgotPassword: async (data: ForgotPasswordFormData): Promise<MessageResponse> => {
+    const res = await apiClient.post<MessageResponse>('/auth/forgot-password', data);
+    return res.data;
+  },
+
+  /** トークンによるパスワード再設定 */
+  resetPassword: async (data: ResetPasswordFormData): Promise<MessageResponse> => {
+    const res = await apiClient.post<MessageResponse>('/auth/reset-password', data);
+    return res.data;
+  },
+
+  /** プロフィール（名前・メールアドレス）の更新 */
+  updateProfile: async (data: UpdateProfileFormData): Promise<User> => {
+    const res = await apiClient.put<User>('/auth/profile', data);
+    return res.data;
+  },
+
+  /** ログイン中ユーザーのパスワード変更 */
+  updatePassword: async (data: UpdatePasswordFormData): Promise<MessageResponse> => {
+    const res = await apiClient.put<MessageResponse>('/auth/password', data);
+    return res.data;
+  },
+
+  /** アカウント削除（退会） */
+  deleteAccount: async (password: string): Promise<MessageResponse> => {
+    const res = await apiClient.delete<MessageResponse>('/auth/account', { data: { password } });
     return res.data;
   },
 };

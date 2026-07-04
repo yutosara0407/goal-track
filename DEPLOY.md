@@ -225,7 +225,27 @@ APP_URL=https://your-tunnel-domain.trycloudflare.com
 FRONTEND_URL=https://your-tunnel-domain.trycloudflare.com
 ```
 
-### 5-3. Laravel アプリキーの生成
+### 5-3. メール送信の設定（パスワード再設定メール）
+
+パスワード再設定機能はメール送信を使います。デフォルトは `MAIL_MAILER=log` で、
+メールは実際には送信されず `storage/logs/laravel.log` に内容が出力されます
+（リセットリンクはログから取得できます）。
+
+実際にメールを届けるには `backend/.env` にSMTPを設定します（例: Gmailのアプリパスワード）:
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=あなたのGmailアドレス
+MAIL_PASSWORD=アプリパスワード（Googleアカウント → セキュリティ → アプリパスワード）
+MAIL_FROM_ADDRESS=あなたのGmailアドレス
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+ResendやSendGridなどの無料枠があるメールAPIも利用できます。
+
+### 5-4. Laravel アプリキーの生成
 
 ```bash
 # 一時的にコンテナで生成
@@ -311,6 +331,31 @@ WantedBy=multi-user.target
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable goal-track
+```
+
+---
+
+## DBバックアップ
+
+`scripts/backup-db.sh` で稼働中のSQLite DBから一貫性のあるスナップショット
+（`VACUUM INTO`）を取得できます。
+
+```bash
+# 手動実行（デフォルトの保存先: ~/goal-track-backups、14日分保持）
+./scripts/backup-db.sh
+
+# cronで毎日自動実行する場合（crontab -e で追加）
+0 4 * * * /home/ubuntu/goal-track/scripts/backup-db.sh >> /home/ubuntu/goal-track-backups/backup.log 2>&1
+```
+
+復元するには、コンテナ停止後に展開したファイルをボリュームに書き戻します:
+
+```bash
+docker compose down
+gunzip -k ~/goal-track-backups/database-XXXX.sqlite.gz
+docker run --rm -v goal-track_laravel-db:/state -v ~/goal-track-backups:/backup \
+  alpine cp /backup/database-XXXX.sqlite /state/database.sqlite
+docker compose up -d
 ```
 
 ---

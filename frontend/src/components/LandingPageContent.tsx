@@ -111,6 +111,14 @@ export function LandingPageContent() {
 
       {/* フッター */}
       <footer className="py-6 border-t border-slate-200/60 dark:border-slate-700/60 text-center">
+        <div className="flex items-center justify-center gap-4 mb-2 text-xs">
+          <Link href="/terms" className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+            {t.legal.terms}
+          </Link>
+          <Link href="/privacy" className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+            {t.legal.privacy}
+          </Link>
+        </div>
         <p className="text-xs text-slate-400 dark:text-slate-500">{t.landing.copyright}</p>
       </footer>
     </div>

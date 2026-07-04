@@ -8,6 +8,7 @@ import {
   ListTodo,
   CalendarDays,
   History,
+  Settings,
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ export function Sidebar() {
     { href: '/goals',     label: t.nav.goals,     icon: <ListTodo size={18} /> },
     { href: '/calendar',  label: t.nav.calendar,  icon: <CalendarDays size={18} /> },
     { href: '/history',   label: t.nav.history,   icon: <History size={18} /> },
+    { href: '/settings',  label: t.nav.settings,  icon: <Settings size={18} /> },
   ];
 
   return (

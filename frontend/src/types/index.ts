@@ -53,6 +53,11 @@ export interface AuthResponse {
   token: string;
 }
 
+/** メッセージのみのAPIレスポンス */
+export interface MessageResponse {
+  message: string;
+}
+
 /** 1日の達成状況アイテム */
 export interface DayCompletionItem {
   goal: Goal;
@@ -125,6 +130,32 @@ export interface LoginFormData {
 export interface RegisterFormData {
   name: string;
   email: string;
+  password: string;
+  password_confirmation: string;
+}
+
+/** パスワード再設定メール送信フォーム */
+export interface ForgotPasswordFormData {
+  email: string;
+}
+
+/** パスワード再設定フォーム */
+export interface ResetPasswordFormData {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
+
+/** プロフィール更新フォーム */
+export interface UpdateProfileFormData {
+  name: string;
+  email: string;
+}
+
+/** パスワード変更フォーム */
+export interface UpdatePasswordFormData {
+  current_password: string;
   password: string;
   password_confirmation: string;
 }

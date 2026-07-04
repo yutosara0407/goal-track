@@ -103,6 +103,15 @@ export default function LoginPage() {
               {errors.password && (
                 <p className="mt-1.5 text-xs text-danger-500" role="alert">{errors.password.message}</p>
               )}
+              {/* パスワード再設定リンク */}
+              <p className="mt-2 text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                >
+                  {t.auth.forgotLink}
+                </Link>
+              </p>
             </div>
 
             {/* ログインボタン */}

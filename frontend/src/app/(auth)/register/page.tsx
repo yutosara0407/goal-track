@@ -164,6 +164,19 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* 利用規約への同意 */}
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              {t.legal.agreePrefix}
+              <Link href="/terms" className="text-primary-600 hover:text-primary-700 underline underline-offset-2" target="_blank">
+                {t.legal.terms}
+              </Link>
+              {t.legal.agreeAnd}
+              <Link href="/privacy" className="text-primary-600 hover:text-primary-700 underline underline-offset-2" target="_blank">
+                {t.legal.privacy}
+              </Link>
+              {t.legal.agreeSuffix}
+            </p>
+
             {/* 登録ボタン */}
             <Button
               type="submit"
