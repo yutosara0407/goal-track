@@ -11,8 +11,9 @@ import {
   parseISO,
   isToday,
 } from 'date-fns';
+import Link from 'next/link';
 import { ja } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { cn, formatRate, getRateBgClass } from '@/lib/utils';
 import { statsApi } from '@/lib/api';
@@ -28,11 +29,12 @@ interface DayDetailProps {
   goalStats: GoalMonthlyStats[];
   selectPrompt: string;
   noRecord: string;
+  editLabel: string;
   achievedOf: (done: number, total: number) => string;
   achieveRate: (rate: string) => string;
 }
 
-function DayDetail({ day, date, goalStats, selectPrompt, noRecord, achievedOf, achieveRate }: DayDetailProps) {
+function DayDetail({ day, date, goalStats, selectPrompt, noRecord, editLabel, achievedOf, achieveRate }: DayDetailProps) {
   if (!day) {
     return (
       <div className="text-sm text-gray-400 text-center py-6">
@@ -55,6 +57,17 @@ function DayDetail({ day, date, goalStats, selectPrompt, noRecord, achievedOf, a
         </p>
       </div>
       {day.total_goals > 0 && <ProgressBar value={day.completion_rate} size="md" showLabel />}
+
+      {/* この日の記録をダッシュボードで編集する（過去日の付け忘れ対応） */}
+      {day.total_goals > 0 && (
+        <Link
+          href={`/dashboard?date=${day.date}`}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+        >
+          <SquarePen size={13} />
+          {editLabel}
+        </Link>
+      )}
     </div>
   );
 }
@@ -235,6 +248,7 @@ export function CalendarView() {
           goalStats={data?.goal_stats ?? []}
           selectPrompt={t.calendar.selectPrompt}
           noRecord={t.calendar.noRecord}
+          editLabel={t.calendar.editThisDay}
           achievedOf={t.calendar.achievedOf}
           achieveRate={t.calendar.achieveRate}
         />

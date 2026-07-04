@@ -15,6 +15,12 @@ const ja = {
     totalGoals: (n: number) => `総目標数: ${n}個`,
     todayProgress: '今日の進捗',
     completedOf: (done: number, total: number) => `${done}/${total} 完了`,
+    navToday: '今日',
+    backToToday: '今日に戻る',
+    editingPast: '過去の日の記録を編集しています',
+    pastGoals: (date: string) => `${date} の記録`,
+    prevDay: '前の日',
+    nextDay: '次の日',
   },
   goals: {
     title: '目標管理',
@@ -96,6 +102,7 @@ const ja = {
     achievedOf: (done: number, total: number) => `${done}/${total}個 達成`,
     achieveRate: (rate: string) => `${rate}達成`,
     noRecord: '記録なし',
+    editThisDay: 'この日の記録を編集',
   },
   auth: {
     appSubtitle: '目標達成管理アプリ',
@@ -240,6 +247,12 @@ const en: typeof ja = {
     totalGoals: (n: number) => `Total: ${n} goals`,
     todayProgress: "Today's Progress",
     completedOf: (done: number, total: number) => `${done}/${total} done`,
+    navToday: 'Today',
+    backToToday: 'Back to today',
+    editingPast: "You're editing a past day",
+    pastGoals: (date: string) => `Records for ${date}`,
+    prevDay: 'Previous day',
+    nextDay: 'Next day',
   },
   goals: {
     title: 'Goals',
@@ -321,6 +334,7 @@ const en: typeof ja = {
     achievedOf: (done: number, total: number) => `${done}/${total} achieved`,
     achieveRate: (rate: string) => `${rate} achieved`,
     noRecord: 'No record',
+    editThisDay: 'Edit this day',
   },
   auth: {
     appSubtitle: 'Goal Achievement Tracker',
@@ -465,6 +479,12 @@ const ko: typeof ja = {
     totalGoals: (n: number) => `전체 목표: ${n}개`,
     todayProgress: '오늘의 진행상황',
     completedOf: (done: number, total: number) => `${done}/${total} 완료`,
+    navToday: '오늘',
+    backToToday: '오늘로 돌아가기',
+    editingPast: '지난 날짜의 기록을 편집하고 있습니다',
+    pastGoals: (date: string) => `${date} 기록`,
+    prevDay: '이전 날',
+    nextDay: '다음 날',
   },
   goals: {
     title: '목표 관리',
@@ -546,6 +566,7 @@ const ko: typeof ja = {
     achievedOf: (done: number, total: number) => `${done}/${total}개 달성`,
     achieveRate: (rate: string) => `${rate} 달성`,
     noRecord: '기록 없음',
+    editThisDay: '이 날짜 기록 편집',
   },
   auth: {
     appSubtitle: '목표 달성 관리 앱',

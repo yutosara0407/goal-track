@@ -80,6 +80,11 @@ class CompletionController extends Controller
             return response()->json(['message' => '権限がありません'], 403);
         }
 
+        // 目標が存在していた期間（作成日〜アーカイブ前日）の外には記録できない
+        if (!$goal->existsOn($request->date)) {
+            return response()->json(['message' => 'この日付には目標が存在していないため記録できません'], 422);
+        }
+
         // updateOrCreate: レコードが存在すれば更新、なければ作成
         $completion = GoalCompletion::updateOrCreate(
             ['goal_id' => $request->goal_id, 'date' => $request->date],

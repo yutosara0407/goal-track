@@ -57,9 +57,10 @@ function NoteModal({ item, onClose, onSave, memoTitle, memoPlaceholder, memoSave
   );
 }
 
-export function TodayGoals() {
-  const today = todayString();
-  const { data, isLoading, error } = useDayCompletions(today);
+export function TodayGoals({ date }: { date?: string }) {
+  // 表示・記録対象の日付（省略時は今日）。過去日の記録付けにも使う
+  const targetDate = date || todayString();
+  const { data, isLoading, error } = useDayCompletions(targetDate);
   const toggleMutation = useToggleCompletion();
   const removeMutation = useRemoveCompletion();
   const [noteTarget, setNoteTarget] = useState<DayCompletionItem | null>(null);
@@ -99,13 +100,13 @@ export function TodayGoals() {
   const handleClick = (item: DayCompletionItem) => {
     if (item.completion_id === null) {
       // 未記録 → 達成
-      toggleMutation.mutate({ goal_id: item.goal.id, date: today, completed: true });
+      toggleMutation.mutate({ goal_id: item.goal.id, date: targetDate, completed: true });
     } else if (item.completed) {
       // 達成 → 未達成
-      toggleMutation.mutate({ goal_id: item.goal.id, date: today, completed: false });
+      toggleMutation.mutate({ goal_id: item.goal.id, date: targetDate, completed: false });
     } else {
       // 未達成 → 未記録（削除）
-      removeMutation.mutate({ id: item.completion_id!, goal_id: item.goal.id, date: today });
+      removeMutation.mutate({ id: item.completion_id!, goal_id: item.goal.id, date: targetDate });
     }
   };
 
@@ -113,7 +114,7 @@ export function TodayGoals() {
     if (!noteTarget) return;
     toggleMutation.mutate({
       goal_id: noteTarget.goal.id,
-      date: today,
+      date: targetDate,
       completed: noteTarget.completed,
       note,
     });
