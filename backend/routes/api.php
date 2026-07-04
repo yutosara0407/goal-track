@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompletionController;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\StatsController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/auth/profile', [AccountController::class, 'updateProfile']);     // プロフィール更新
     Route::put('/auth/password', [AccountController::class, 'updatePassword']);   // パスワード変更
     Route::delete('/auth/account', [AccountController::class, 'destroy']);        // 退会
+
+    // ソーシャル（/users/search は {user} バインディングより先に定義すること）
+    Route::get('/users/search', [UserController::class, 'search']);               // 公開ユーザー検索
+    Route::get('/users/{user}', [UserController::class, 'show']);                 // 公開プロフィール
+    Route::get('/users/{user}/followers', [UserController::class, 'followers']);  // フォロワー一覧
+    Route::get('/users/{user}/following', [UserController::class, 'following']);  // フォロー中一覧
+    Route::post('/users/{user}/follow', [UserController::class, 'follow']);       // フォロー
+    Route::delete('/users/{user}/follow', [UserController::class, 'unfollow']);   // フォロー解除
 
     // 目標のCRUD
     Route::apiResource('goals', GoalController::class);

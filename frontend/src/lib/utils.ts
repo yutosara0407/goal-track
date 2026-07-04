@@ -162,6 +162,6 @@ export function formatStreak(days: number): string {
   if (days === 0) return '0日';
   if (days === 1) return '1日継続中！';
   if (days < 7) return `${days}日連続！`;
-  if (days < 30) return `${days}日連続🔥`;
-  return `${days}日連続🔥🔥`;
+  if (days < 30) return `${days}日連続`;
+  return `${days}日連続`;
 }

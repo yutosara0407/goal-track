@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Circle, XCircle, ChevronRight } from 'lucide-react';
+import { CheckCircle2, Circle, XCircle, ChevronRight, Target, MessageSquare } from 'lucide-react';
 import { cn, todayString } from '@/lib/utils';
 import { useDayCompletions, useToggleCompletion, useRemoveCompletion } from '@/hooks/useCompletions';
 import { CardSkeleton } from '@/components/ui/LoadingSkeleton';
@@ -84,7 +84,9 @@ export function TodayGoals() {
   if (!data || data.items.length === 0) {
     return (
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm p-8 text-center">
-        <div className="text-5xl mb-4">🎯</div>
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 mb-4">
+          <Target size={26} className="text-indigo-500" />
+        </div>
         <p className="text-slate-600 dark:text-slate-400 font-medium">{t.completion.noGoals}</p>
         <p className="text-sm text-slate-400 mt-1">
           <a href="/goals" className="text-indigo-600 hover:underline">{t.completion.noGoalsLinkText}</a>
@@ -197,7 +199,7 @@ export function TodayGoals() {
                 </p>
                 {item.note && (
                   <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">
-                    💬 {item.note}
+                    <MessageSquare size={11} className="inline shrink-0 -mt-0.5 mr-1" />{item.note}
                   </p>
                 )}
               </div>

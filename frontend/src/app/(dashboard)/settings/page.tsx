@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserRound, Lock, TriangleAlert } from 'lucide-react';
+import { UserRound, Lock, Globe, TriangleAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -18,6 +18,8 @@ import { useLang } from '@/contexts/LangContext';
 const profileSchema = z.object({
   name: z.string().min(1, '名前を入力してください').max(50, '名前は50文字以内で入力してください'),
   email: z.string().email('有効なメールアドレスを入力してください'),
+  bio: z.string().max(500, '自己紹介は500文字以内で入力してください'),
+  is_public: z.boolean(),
 });
 
 const passwordSchema = z
@@ -55,8 +57,14 @@ export default function SettingsPage() {
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    values: { name: user?.name ?? '', email: user?.email ?? '' },
+    values: {
+      name: user?.name ?? '',
+      email: user?.email ?? '',
+      bio: user?.bio ?? '',
+      is_public: user?.is_public ?? true,
+    },
   });
+  const isPublic = profileForm.watch('is_public');
 
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -140,6 +148,53 @@ export default function SettingsPage() {
             {profileForm.formState.errors.email && (
               <p className="mt-1.5 text-xs text-danger-500" role="alert">{profileForm.formState.errors.email.message}</p>
             )}
+          </div>
+
+          <div>
+            <label htmlFor="bio" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              {t.settings.bioLabel}
+            </label>
+            <textarea
+              id="bio"
+              rows={3}
+              maxLength={500}
+              placeholder={t.settings.bioPlaceholder}
+              {...profileForm.register('bio')}
+              className={`${inputClass} resize-none`}
+            />
+            {profileForm.formState.errors.bio && (
+              <p className="mt-1.5 text-xs text-danger-500" role="alert">{profileForm.formState.errors.bio.message}</p>
+            )}
+          </div>
+
+          {/* 公開/非公開トグル */}
+          <div className="flex items-start justify-between gap-4 p-4 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-300">
+                {isPublic ? <Globe size={14} className="text-indigo-500" /> : <Lock size={14} className="text-slate-400" />}
+                {t.settings.visibilityTitle}
+                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                  {isPublic ? t.settings.visibilityPublic : t.settings.visibilityPrivate}
+                </span>
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t.settings.visibilityDesc}</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isPublic}
+              aria-label={t.settings.visibilityTitle}
+              onClick={() => profileForm.setValue('is_public', !isPublic, { shouldDirty: true })}
+              className={`relative shrink-0 w-11 h-6 rounded-full transition-colors ${
+                isPublic ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                  isPublic ? 'translate-x-5' : ''
+                }`}
+              />
+            </button>
           </div>
 
           <Button type="submit" isLoading={isProfileSaving}>{t.settings.profileSave}</Button>

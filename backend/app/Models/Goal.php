@@ -79,23 +79,39 @@ class Goal extends Model
 
     /**
      * 現在の連続達成日数（ストリーク）を計算する
-     * 今日から遡って、連続して達成している日数を返す
+     * 今日（未記録なら昨日）から遡って、連続して達成している日数を返す。
+     * 今日まだチェックしていなくてもストリークは途切れない扱いにする。
+     *
+     * 注意: date列はCarbonキャストのため、比較は必ずtoDateString()で行うこと
+     * （Carbonと文字列の === 比較は常にfalseになる）
      */
     public function currentStreak(): int
     {
-        $streak = 0;
-        $date = now()->toDateString();
+        $today = now()->toDateString();
 
-        // 達成記録を降順で取得
-        $completions = $this->completions()
+        // 達成日（Y-m-d文字列）を新しい順に取得
+        $dates = $this->completions()
             ->where('completed', true)
-            ->where('date', '<=', $date)
+            ->where('date', '<=', $today)
             ->orderByDesc('date')
-            ->pluck('date');
+            ->pluck('date')
+            ->map(fn($d) => $d->toDateString())
+            ->unique()
+            ->values();
 
-        foreach ($completions as $index => $completionDate) {
-            $expected = now()->subDays($index)->toDateString();
-            if ($completionDate === $expected) {
+        if ($dates->isEmpty()) {
+            return 0;
+        }
+
+        // 起点は「今日」または「昨日」（今日が未達成でも昨日までの連続は有効）
+        $anchor = $dates->first() === $today ? now() : now()->subDay();
+        if ($dates->first() !== $anchor->toDateString()) {
+            return 0;
+        }
+
+        $streak = 0;
+        foreach ($dates as $index => $date) {
+            if ($date === $anchor->copy()->subDays($index)->toDateString()) {
                 $streak++;
             } else {
                 break;

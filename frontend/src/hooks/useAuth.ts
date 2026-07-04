@@ -32,7 +32,7 @@ export function useAuth() {
       storeLogin(response.user, response.token);
       // middlewareがEdge RuntimeでlocalStorageを読めないため、認証フラグをCookieにも保存
       document.cookie = 'goal_app_auth=1; path=/; max-age=2592000; SameSite=Lax';
-      toast.success(`おかえりなさい、${response.user.name}さん！`);
+      toast.success(`おかえりなさい、${response.user.name}さん`);
       router.push('/dashboard');
     } catch (error) {
       toast.error(extractErrorMessage(error));
@@ -53,7 +53,7 @@ export function useAuth() {
       queryClient.clear();
       storeLogin(response.user, response.token);
       document.cookie = 'goal_app_auth=1; path=/; max-age=2592000; SameSite=Lax';
-      toast.success('アカウントを作成しました！目標を登録してみましょう 🎯');
+      toast.success('アカウントを作成しました！目標を登録してみましょう');
       router.push('/dashboard');
     } catch (error) {
       toast.error(extractErrorMessage(error));

@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp, Target, CalendarCheck, Star } from 'lucide-react';
+import { TrendingUp, Target, CalendarCheck, Star, Flame } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { TodayGoals } from '@/components/dashboard/TodayGoals';
 import { StreakCard } from '@/components/dashboard/StreakCard';
@@ -90,7 +90,8 @@ export default function DashboardPage() {
 
         {/* ストリーク（1/3幅） */}
         <div>
-          <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3">
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+            <Flame size={18} className="text-orange-500" />
             {t.dashboard.streakRanking}
           </h2>
           {stats ? (

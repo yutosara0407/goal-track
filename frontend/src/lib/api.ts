@@ -20,6 +20,8 @@ import {
   UpdatePasswordFormData,
   UpdateProfileFormData,
   User,
+  UserProfile,
+  UserSummary,
 } from '@/types';
 
 // ============================================================
@@ -134,6 +136,46 @@ export const authApi = {
   /** アカウント削除（退会） */
   deleteAccount: async (password: string): Promise<MessageResponse> => {
     const res = await apiClient.delete<MessageResponse>('/auth/account', { data: { password } });
+    return res.data;
+  },
+};
+
+// ============================================================
+// ソーシャルAPI
+// ============================================================
+
+export const usersApi = {
+  /** 公開ユーザーを名前・bioで検索 */
+  search: async (q: string): Promise<UserSummary[]> => {
+    const res = await apiClient.get<UserSummary[]>('/users/search', { params: { q } });
+    return res.data;
+  },
+
+  /** 公開プロフィールを取得 */
+  profile: async (id: number): Promise<UserProfile> => {
+    const res = await apiClient.get<UserProfile>(`/users/${id}`);
+    return res.data;
+  },
+
+  /** フォローする */
+  follow: async (id: number): Promise<void> => {
+    await apiClient.post(`/users/${id}/follow`);
+  },
+
+  /** フォローを解除する */
+  unfollow: async (id: number): Promise<void> => {
+    await apiClient.delete(`/users/${id}/follow`);
+  },
+
+  /** フォロワー一覧 */
+  followers: async (id: number): Promise<UserSummary[]> => {
+    const res = await apiClient.get<UserSummary[]>(`/users/${id}/followers`);
+    return res.data;
+  },
+
+  /** フォロー中一覧 */
+  following: async (id: number): Promise<UserSummary[]> => {
+    const res = await apiClient.get<UserSummary[]>(`/users/${id}/following`);
     return res.data;
   },
 };

@@ -22,7 +22,7 @@ class AccountController extends Controller
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
-        $user->update($request->only('name', 'email'));
+        $user->update($request->only('name', 'email', 'bio', 'is_public'));
 
         return response()->json($user);
     }

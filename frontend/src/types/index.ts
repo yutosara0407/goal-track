@@ -12,8 +12,44 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  bio: string | null;
+  is_public: boolean;
   created_at: string;
   updated_at: string;
+}
+
+/** ユーザー検索・一覧表示用のサマリー（メールアドレスは含まれない） */
+export interface UserSummary {
+  id: number;
+  name: string;
+  bio: string | null;
+  is_public: boolean;
+  followers_count: number;
+  is_following: boolean;
+}
+
+/** 公開プロフィールの達成統計 */
+export interface ProfileStats {
+  active_goals: number;
+  total_completed: number;
+  active_days: number;
+  best_current_streak: number;
+  month_completion_rate: number;
+}
+
+/** 公開プロフィール */
+export interface UserProfile {
+  id: number;
+  name: string;
+  is_public: boolean;
+  is_self: boolean;
+  is_following: boolean;
+  joined_at: string;
+  bio: string | null;
+  followers_count: number | null;
+  following_count: number | null;
+  stats: ProfileStats | null;
+  achievements: string[] | null;
 }
 
 /** 目標 */
@@ -151,6 +187,8 @@ export interface ResetPasswordFormData {
 export interface UpdateProfileFormData {
   name: string;
   email: string;
+  bio?: string | null;
+  is_public?: boolean;
 }
 
 /** パスワード変更フォーム */

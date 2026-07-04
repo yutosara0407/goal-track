@@ -23,6 +23,8 @@ class UpdateProfileRequest extends FormRequest
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users')->ignore($this->user()->id),
             ],
+            'bio'       => ['nullable', 'string', 'max:500'],
+            'is_public' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -33,6 +35,7 @@ class UpdateProfileRequest extends FormRequest
             'email.required' => 'メールアドレスは必須です',
             'email.email'    => '有効なメールアドレスを入力してください',
             'email.unique'   => 'このメールアドレスは既に使用されています',
+            'bio.max'        => '自己紹介は500文字以内で入力してください',
         ];
     }
 }

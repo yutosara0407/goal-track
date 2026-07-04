@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, Settings, LogOut } from 'lucide-react';
+import { Menu, X, Target, LayoutDashboard, ListTodo, CalendarDays, History, Users, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useLang } from '@/contexts/LangContext';
@@ -21,6 +21,7 @@ export function Header() {
     { href: '/goals',     label: t.nav.goals,     icon: <ListTodo size={20} /> },
     { href: '/calendar',  label: t.nav.calendar,  icon: <CalendarDays size={20} /> },
     { href: '/history',   label: t.nav.history,   icon: <History size={20} /> },
+    { href: '/users',     label: t.nav.social,    icon: <Users size={20} /> },
     { href: '/settings',  label: t.nav.settings,  icon: <Settings size={20} /> },
   ];
 

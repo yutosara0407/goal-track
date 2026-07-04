@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, ListTodo } from 'lucide-react';
+import { Plus, ListTodo, Sprout } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { GoalCard } from '@/components/goals/GoalCard';
@@ -79,7 +79,9 @@ export default function GoalsPage() {
 
             {activeGoals.length === 0 ? (
               <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 border border-slate-100 dark:border-slate-800 shadow-sm text-center">
-                <div className="text-5xl mb-3">🌱</div>
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 mb-3">
+                  <Sprout size={26} className="text-emerald-500" />
+                </div>
                 <p className="text-slate-600 dark:text-slate-400 font-medium">{t.goals.emptyTitle}</p>
                 <p className="text-sm text-slate-400 mt-1">{t.goals.emptySubtitle}</p>
                 <Button
