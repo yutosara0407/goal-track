@@ -62,6 +62,8 @@ export interface Goal {
   color: string;
   /** false の場合はアーカイブ済み */
   is_active: boolean;
+  /** アーカイブした日時（アクティブ時はnull）。統計上はこの前日まで存在していた扱い */
+  archived_at: string | null;
   created_at: string;
   updated_at: string;
 }

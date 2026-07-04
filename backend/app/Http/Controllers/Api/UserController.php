@@ -187,13 +187,20 @@ class UserController extends Controller
             ->max() ?? 0;
 
         // 今月の達成率（StatsController::overviewと同じ算式）
-        // 分母は各目標が存在していた日数の合計（作成前の日は数えない）
+        // 分母は各目標が存在していた日数の合計（作成前・アーカイブ後の日は数えない）
         $monthStart = now()->startOfMonth()->toDateString();
         $today = now()->toDateString();
-        $monthDenominator = $activeGoals->sum(fn($goal) => $goal->eligibleDaysBetween($monthStart, $today));
+        $allGoals = $user->goals()->get();
+        $goalsById = $allGoals->keyBy('id');
+        $monthDenominator = $allGoals->sum(fn($goal) => $goal->eligibleDaysBetween($monthStart, $today));
         $monthCompleted = GoalCompletion::whereIn('goal_id', $goalIds)
             ->whereBetween('date', [$monthStart, $today])
             ->where('completed', true)
+            ->get(['goal_id', 'date'])
+            ->filter(function ($c) use ($goalsById) {
+                $goal = $goalsById->get($c->goal_id);
+                return $goal && $goal->existsOn($c->date->toDateString());
+            })
             ->count();
 
         return [

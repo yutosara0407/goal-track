@@ -30,7 +30,8 @@ class Goal extends Model
      * カラムの型キャスト
      */
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'   => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     /**
@@ -69,16 +70,45 @@ class Goal extends Model
     }
 
     /**
+     * この目標が集計対象になる最終日
+     * アクティブならnull（無期限）、アーカイブ済みならアーカイブ日の前日。
+     * アーカイブした当日から「今日の目標」に出なくなる直感的な挙動にする。
+     */
+    public function endDate(): ?string
+    {
+        if ($this->is_active) {
+            return null;
+        }
+        // 旧データでarchived_atが無い場合は最終更新日時で代用
+        $archivedAt = $this->archived_at ?? $this->updated_at;
+        return $archivedAt->copy()->subDay()->toDateString();
+    }
+
+    /**
+     * 指定日にこの目標が存在していた（集計対象だった）かどうか
+     */
+    public function existsOn(string $date): bool
+    {
+        if ($date < $this->startDate()) {
+            return false;
+        }
+        $end = $this->endDate();
+        return $end === null || $date <= $end;
+    }
+
+    /**
      * 指定期間のうち、この目標が存在していた日数を返す
-     * （作成日より前の日は集計対象外）
+     * （作成日より前・アーカイブ日以降は集計対象外）
      */
     public function eligibleDaysBetween(string $from, string $to): int
     {
         $start = max($from, $this->startDate());
-        if ($start > $to) {
+        $end = $this->endDate();
+        $effectiveTo = $end === null ? $to : min($to, $end);
+        if ($start > $effectiveTo) {
             return 0;
         }
-        return \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($to)) + 1;
+        return \Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($effectiveTo)) + 1;
     }
 
     /**

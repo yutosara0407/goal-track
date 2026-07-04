@@ -67,7 +67,15 @@ class GoalController extends Controller
     {
         $this->authorize('update', $goal);
 
-        $goal->update($request->validated());
+        $data = $request->validated();
+
+        // アーカイブ/復元の遷移でarchived_atを管理する
+        // （アーカイブ日までは統計・過去の日別表示に存在していた扱いになる）
+        if (array_key_exists('is_active', $data) && (bool) $data['is_active'] !== $goal->is_active) {
+            $goal->archived_at = $data['is_active'] ? null : now();
+        }
+
+        $goal->fill($data)->save();
 
         return response()->json($goal);
     }
