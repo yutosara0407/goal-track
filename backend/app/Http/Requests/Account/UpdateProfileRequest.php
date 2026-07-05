@@ -35,7 +35,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name'  => ['required', 'string', 'max:255'],
             'username' => [
-                'nullable', 'string', 'regex:/^[a-z0-9_.-]{1,10}$/',
+                'nullable', 'string', 'regex:/^[a-z0-9_.-]{1,20}$/',
                 Rule::unique('users', 'username')->ignore($this->user()->id),
             ],
             'email' => [
@@ -53,7 +53,7 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name.required'   => '名前は必須です',
-            'username.regex'  => 'ユーザーIDは半角英数字・_・.・-のみ、10文字以内で入力してください',
+            'username.regex'  => 'ユーザーIDは半角英数字・_・.・-のみ、20文字以内で入力してください',
             'username.unique' => 'このユーザーIDは既に使用されています',
             'email.required'  => 'メールアドレスは必須です',
             'email.email'     => '有効なメールアドレスを入力してください',

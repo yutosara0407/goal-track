@@ -128,7 +128,7 @@ export default function SocialPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.social.searchPlaceholder}
-            maxLength={11}
+            maxLength={21}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
           />
         </div>

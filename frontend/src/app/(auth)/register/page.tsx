@@ -21,7 +21,7 @@ const registerSchema = z
     username: z
       .string()
       .min(1, 'ユーザーIDを入力してください')
-      .max(10, 'ユーザーIDは10文字以内で入力してください')
+      .max(20, 'ユーザーIDは20文字以内で入力してください')
       .regex(/^[A-Za-z0-9_.-]+$/, 'ユーザーIDは半角英数字・_・.・-のみ使用できます'),
     email: z.string().email('有効なメールアドレスを入力してください'),
     password: z
@@ -112,7 +112,7 @@ export default function RegisterPage() {
                   id="username"
                   type="text"
                   autoComplete="off"
-                  maxLength={10}
+                  maxLength={20}
                   placeholder={t.auth.usernamePlaceholder}
                   {...register('username')}
                   className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"

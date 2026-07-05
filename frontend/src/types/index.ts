@@ -11,7 +11,7 @@
 export interface User {
   id: number;
   name: string;
-  /** 検索に使う一意なID（半角英数・_.-、10文字以内、小文字）。未設定の場合はnull */
+  /** 検索に使う一意なID（半角英数・_.-、20文字以内、小文字）。未設定の場合はnull */
   username: string | null;
   email: string;
   bio: string | null;

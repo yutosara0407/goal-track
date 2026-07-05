@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name'     => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'regex:/^[a-z0-9_.-]{1,10}$/', 'unique:users,username'],
+            'username' => ['required', 'string', 'regex:/^[a-z0-9_.-]{1,20}$/', 'unique:users,username'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
@@ -39,7 +39,7 @@ class RegisterRequest extends FormRequest
         return [
             'name.required'      => '名前は必須です',
             'username.required'  => 'ユーザーIDは必須です',
-            'username.regex'     => 'ユーザーIDは半角英数字・_・.・-のみ、10文字以内で入力してください',
+            'username.regex'     => 'ユーザーIDは半角英数字・_・.・-のみ、20文字以内で入力してください',
             'username.unique'    => 'このユーザーIDは既に使用されています',
             'email.required'     => 'メールアドレスは必須です',
             'email.email'        => '有効なメールアドレスを入力してください',
