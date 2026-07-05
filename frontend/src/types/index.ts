@@ -11,6 +11,8 @@
 export interface User {
   id: number;
   name: string;
+  /** 検索に使う一意なID（半角英数・_.-、10文字以内、小文字）。未設定の場合はnull */
+  username: string | null;
   email: string;
   bio: string | null;
   is_public: boolean;
@@ -22,6 +24,7 @@ export interface User {
 export interface UserSummary {
   id: number;
   name: string;
+  username: string | null;
   bio: string | null;
   is_public: boolean;
   followers_count: number;
@@ -41,6 +44,7 @@ export interface ProfileStats {
 export interface UserProfile {
   id: number;
   name: string;
+  username: string | null;
   is_public: boolean;
   is_self: boolean;
   is_following: boolean;
@@ -167,6 +171,7 @@ export interface LoginFormData {
 /** 新規登録フォーム */
 export interface RegisterFormData {
   name: string;
+  username: string;
   email: string;
   password: string;
   password_confirmation: string;
@@ -188,6 +193,7 @@ export interface ResetPasswordFormData {
 /** プロフィール更新フォーム */
 export interface UpdateProfileFormData {
   name: string;
+  username?: string | null;
   email: string;
   bio?: string | null;
   is_public?: boolean;

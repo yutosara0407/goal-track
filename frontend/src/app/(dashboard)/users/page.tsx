@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Users, UserRound, SearchX } from 'lucide-react';
+import { AtSign, Users, UserRound, SearchX, Info } from 'lucide-react';
 import { usersApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth';
 import { useLang } from '@/contexts/LangContext';
@@ -57,7 +58,7 @@ export default function SocialPage() {
       return {
         data: searchQuery.data,
         isLoading: searchQuery.isLoading,
-        emptyIcon: query.trim() ? SearchX : Search,
+        emptyIcon: query.trim() ? SearchX : AtSign,
         emptyText: query.trim() ? t.social.searchEmpty : t.social.searchHint,
       };
     }
@@ -87,6 +88,19 @@ export default function SocialPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t.social.subtitle}</p>
       </div>
 
+      {/* ユーザーID未設定の注意（自分が検索されない状態であることを知らせる） */}
+      {!user?.username && (
+        <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/40 text-sm text-indigo-700 dark:text-indigo-300">
+          <Info size={16} className="shrink-0 mt-0.5" />
+          <div>
+            <p>{t.social.usernameNotSetNotice}</p>
+            <Link href="/settings" className="font-medium underline underline-offset-2 hover:no-underline">
+              {t.social.goToSettings}
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* タブ */}
       <div className="flex gap-1 p-1 bg-slate-100/80 dark:bg-slate-800/60 rounded-2xl w-fit">
         {tabs.map((item) => (
@@ -108,12 +122,13 @@ export default function SocialPage() {
       {/* 検索ボックス */}
       {tab === 'search' && (
         <div className="relative max-w-md">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <AtSign size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.social.searchPlaceholder}
+            maxLength={11}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
           />
         </div>

@@ -17,12 +17,12 @@ use Illuminate\Validation\ValidationException;
 class AccountController extends Controller
 {
     /**
-     * プロフィール（名前・メールアドレス）を更新する
+     * プロフィール（名前・ユーザーID・メールアドレス等）を更新する
      */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
-        $user->update($request->only('name', 'email', 'bio', 'is_public'));
+        $user->update($request->only('name', 'username', 'email', 'bio', 'is_public'));
 
         return response()->json($user);
     }

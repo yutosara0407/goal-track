@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Target, User, Mail, Lock } from 'lucide-react';
+import { Target, User, AtSign, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { RegisterFormData } from '@/types';
@@ -18,6 +18,11 @@ const registerSchema = z
       .string()
       .min(1, '名前を入力してください')
       .max(50, '名前は50文字以内で入力してください'),
+    username: z
+      .string()
+      .min(1, 'ユーザーIDを入力してください')
+      .max(10, 'ユーザーIDは10文字以内で入力してください')
+      .regex(/^[A-Za-z0-9_.-]+$/, 'ユーザーIDは半角英数字・_・.・-のみ使用できます'),
     email: z.string().email('有効なメールアドレスを入力してください'),
     password: z
       .string()
@@ -93,6 +98,31 @@ export default function RegisterPage() {
               </div>
               {errors.name && (
                 <p className="mt-1.5 text-xs text-danger-500" role="alert">{errors.name.message}</p>
+              )}
+            </div>
+
+            {/* ユーザーID */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                {t.auth.usernameLabel}
+              </label>
+              <div className="relative">
+                <AtSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  id="username"
+                  type="text"
+                  autoComplete="off"
+                  maxLength={10}
+                  placeholder={t.auth.usernamePlaceholder}
+                  {...register('username')}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+                  aria-invalid={!!errors.username}
+                />
+              </div>
+              {errors.username ? (
+                <p className="mt-1.5 text-xs text-danger-500" role="alert">{errors.username.message}</p>
+              ) : (
+                <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">{t.auth.usernameHelp}</p>
               )}
             </div>
 

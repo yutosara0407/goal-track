@@ -13,31 +13,34 @@ use Illuminate\Http\Request;
  * ユーザー検索・公開プロフィール・フォロー関係を扱う
  *
  * プライバシー方針:
- * - 公開されるのは名前・bio・参加日・集計統計・実績バッジのみ
+ * - 公開されるのは名前・ユーザーID・bio・参加日・集計統計・実績バッジのみ
  * - メールアドレス・目標タイトル・メモは一切公開しない
  * - is_public=false のユーザーは検索に出ず、統計も閲覧不可
+ *
+ * 検索方針:
+ * - ユーザーIDの前方一致のみで検索する（名前・bioでは検索できない）
+ * - usernameが未設定（null）のユーザーは検索対象外
  */
 class UserController extends Controller
 {
     /**
-     * 公開ユーザーを名前・bioで検索する
+     * 公開ユーザーをユーザーIDの前方一致で検索する
      */
     public function search(Request $request): JsonResponse
     {
         $request->validate(
             ['q' => ['required', 'string', 'min:1', 'max:100']],
-            ['q.required' => '検索キーワードを入力してください'],
+            ['q.required' => 'ユーザーIDを入力してください'],
         );
 
-        $q = $request->string('q');
+        // 先頭の@は入力の揺れとして許容し、大文字小文字も無視する
+        $q = strtolower(ltrim($request->string('q'), '@'));
         $viewer = $request->user();
 
         $users = User::where('is_public', true)
+            ->whereNotNull('username')
             ->whereKeyNot($viewer->id)
-            ->where(function ($query) use ($q) {
-                $query->where('name', 'like', "%{$q}%")
-                    ->orWhere('bio', 'like', "%{$q}%");
-            })
+            ->where('username', 'like', "{$q}%")
             ->withCount('followers')
             ->orderByDesc('followers_count')
             ->limit(20)
@@ -63,6 +66,7 @@ class UserController extends Controller
         $payload = [
             'id'              => $user->id,
             'name'            => $user->name,
+            'username'        => $user->username,
             'is_public'       => $user->is_public,
             'is_self'         => $isSelf,
             'is_following'    => $isSelf ? false : $viewer->isFollowing($user),
@@ -156,6 +160,7 @@ class UserController extends Controller
         return [
             'id'              => $user->id,
             'name'            => $user->name,
+            'username'        => $user->username,
             'bio'             => $user->bio,
             'is_public'       => $user->is_public,
             'followers_count' => $user->followers_count ?? $user->followers()->count(),

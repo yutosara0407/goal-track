@@ -39,6 +39,9 @@ export function UserCard({ user }: { user: UserSummary }) {
         >
           {user.name}
         </Link>
+        <p className="text-xs text-slate-400 dark:text-slate-500 truncate">
+          {user.username ? `@${user.username}` : t.social.noUsername}
+        </p>
         <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
           {user.bio || t.social.noBio}
         </p>

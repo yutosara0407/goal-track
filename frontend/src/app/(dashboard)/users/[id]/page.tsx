@@ -75,6 +75,10 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
               {!profile.is_public && <Badge variant="neutral">{t.social.privateBadge}</Badge>}
             </div>
 
+            <p className="text-sm text-slate-400 dark:text-slate-500">
+              {profile.username ? `@${profile.username}` : t.social.noUsername}
+            </p>
+
             <p className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 mt-1">
               <CalendarDays size={12} />
               {t.social.joined(profile.joined_at)}

@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserRound, Lock, Globe, TriangleAlert } from 'lucide-react';
+import { UserRound, AtSign, Lock, Globe, TriangleAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -17,6 +17,14 @@ import { useLang } from '@/contexts/LangContext';
 
 const profileSchema = z.object({
   name: z.string().min(1, '名前を入力してください').max(50, '名前は50文字以内で入力してください'),
+  // 未設定は空文字として扱い、送信時にnullへ変換する
+  username: z.union([
+    z.literal(''),
+    z
+      .string()
+      .max(10, 'ユーザーIDは10文字以内で入力してください')
+      .regex(/^[A-Za-z0-9_.-]+$/, 'ユーザーIDは半角英数字・_・.・-のみ使用できます'),
+  ]),
   email: z.string().email('有効なメールアドレスを入力してください'),
   bio: z.string().max(500, '自己紹介は500文字以内で入力してください'),
   is_public: z.boolean(),
@@ -59,6 +67,7 @@ export default function SettingsPage() {
     resolver: zodResolver(profileSchema),
     values: {
       name: user?.name ?? '',
+      username: user?.username ?? '',
       email: user?.email ?? '',
       bio: user?.bio ?? '',
       is_public: user?.is_public ?? true,
@@ -73,7 +82,8 @@ export default function SettingsPage() {
   const onProfileSubmit = async (data: ProfileFormValues) => {
     setIsProfileSaving(true);
     try {
-      const updated = await authApi.updateProfile(data);
+      // 空文字は「未設定」を意味するのでnullとして送る
+      const updated = await authApi.updateProfile({ ...data, username: data.username || null });
       setUser(updated);
       toast.success(t.settings.profileSaved);
     } catch (error) {
@@ -137,6 +147,29 @@ export default function SettingsPage() {
             <input id="name" type="text" autoComplete="name" {...profileForm.register('name')} className={inputClass} />
             {profileForm.formState.errors.name && (
               <p className="mt-1.5 text-xs text-danger-500" role="alert">{profileForm.formState.errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              {t.auth.usernameLabel}
+            </label>
+            <div className="relative">
+              <AtSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                id="username"
+                type="text"
+                autoComplete="off"
+                maxLength={10}
+                placeholder={t.auth.usernamePlaceholder}
+                {...profileForm.register('username')}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow"
+              />
+            </div>
+            {profileForm.formState.errors.username ? (
+              <p className="mt-1.5 text-xs text-danger-500" role="alert">{profileForm.formState.errors.username.message}</p>
+            ) : (
+              <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">{t.auth.usernameHelp}</p>
             )}
           </div>
 
