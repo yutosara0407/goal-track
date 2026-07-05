@@ -39,7 +39,8 @@ export function middleware(request: NextRequest) {
 export const config = {
   // ミドルウェアを適用するパスのパターン
   matcher: [
-    // Next.js の内部パスと静的ファイルを除外
-    '/((?!_next/static|_next/image|favicon.ico|api).*)',
+    // Next.js の内部パス・静的ファイル・favicon/PWAアイコン・マニフェストを除外
+    // （ブラウザは未ログイン状態のページでもこれらを取得するため、認証ガードの対象外にする）
+    '/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|manifest.webmanifest|icons/|api).*)',
   ],
 };

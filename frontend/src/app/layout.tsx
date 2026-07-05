@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/components/providers/Providers';
@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: { template: '%s | GoalTrack', default: 'GoalTrack - 目標達成管理アプリ' },
   description: '日々の目標を登録・記録して、習慣を形成するアプリ',
+};
+
+// ブラウザ・PWAのUIクロームをブランドカラーに統一（favicon/PWAアイコンはicon.svg・apple-icon.png・manifest.tsで管理）
+export const viewport: Viewport = {
+  themeColor: '#6366f1',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
