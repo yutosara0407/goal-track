@@ -2,7 +2,11 @@ import type { MetadataRoute } from 'next';
 
 /**
  * PWA用Webマニフェスト
- * アイコンはヘッダー・favicon(icon.svg)と同じブランドマーク（Targetアイコン×indigo-violetグラデーション）
+ * アイコンはヘッダー・favicon(icon.svg)と同じブランドマーク（テーマカラーのTargetアイコン、背景は透過）
+ *
+ * 注意: maskable purposeは意図的に宣言しない。AndroidのMaskable Icon仕様は
+ * セーフゾーン全体を不透明で塗ることを前提としており、透過背景のアイコンを
+ * maskableとして宣言するとOSのマスク適用時に見た目が崩れるため。
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -25,12 +29,6 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
-      },
-      {
-        src: '/icons/icon-maskable-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable',
       },
     ],
   };
