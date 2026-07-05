@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompletionController;
+use App\Http\Controllers\Api\DailyNoteController;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\TimelineController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\StatsController;
@@ -58,4 +60,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // 統計・分析
     Route::get('/stats/overview', [StatsController::class, 'overview']); // ダッシュボード用サマリー
     Route::get('/stats/monthly', [StatsController::class, 'monthly']);   // 月次カレンダーデータ
+
+    // 日次ノート（ユーザー単位の日記。目標ごとのメモとは別物）
+    Route::get('/notes', [DailyNoteController::class, 'show']);   // 指定日の自分のノート取得
+    Route::put('/notes', [DailyNoteController::class, 'upsert']); // 指定日のノート作成・更新（空で削除）
+
+    // タイムライン（フォロー中×タイムライン公開ユーザーの達成状況+ノート）
+    Route::get('/timeline', [TimelineController::class, 'index']);
 });

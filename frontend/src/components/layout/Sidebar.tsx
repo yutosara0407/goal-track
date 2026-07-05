@@ -8,6 +8,7 @@ import {
   ListTodo,
   CalendarDays,
   History,
+  Rss,
   Users,
   Settings,
   LogOut,
@@ -28,6 +29,7 @@ export function Sidebar() {
     { href: '/goals',     label: t.nav.goals,     icon: <ListTodo size={18} /> },
     { href: '/calendar',  label: t.nav.calendar,  icon: <CalendarDays size={18} /> },
     { href: '/history',   label: t.nav.history,   icon: <History size={18} /> },
+    { href: '/timeline',  label: t.nav.timeline,  icon: <Rss size={18} /> },
     { href: '/users',     label: t.nav.social,    icon: <Users size={18} /> },
     { href: '/settings',  label: t.nav.settings,  icon: <Settings size={18} /> },
   ];

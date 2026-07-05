@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Target, CalendarCheck, Star, Flame, ChevronLeft, ChevronRight, History } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { TodayGoals } from '@/components/dashboard/TodayGoals';
+import { DailyNoteCard } from '@/components/dashboard/DailyNoteCard';
 import { StreakCard } from '@/components/dashboard/StreakCard';
 import { StatCardSkeleton } from '@/components/ui/LoadingSkeleton';
 import { statsApi } from '@/lib/api';
@@ -147,6 +148,7 @@ export default function DashboardPage({ searchParams }: { searchParams?: { date?
           )}
 
           <TodayGoals date={selectedDate} />
+          <DailyNoteCard date={selectedDate} />
         </div>
 
         {/* ストリーク（1/3幅） */}

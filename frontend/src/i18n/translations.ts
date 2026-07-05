@@ -1,7 +1,7 @@
 export type Lang = 'ja' | 'en' | 'ko';
 
 const ja = {
-  nav: { dashboard: 'ダッシュボード', goals: '目標管理', calendar: 'カレンダー', history: '履歴・分析', social: 'ソーシャル', settings: '設定', logout: 'ログアウト' },
+  nav: { dashboard: 'ダッシュボード', goals: '目標管理', calendar: 'カレンダー', history: '履歴・分析', timeline: 'タイムライン', social: 'ソーシャル', settings: '設定', logout: 'ログアウト' },
   dashboard: {
     title: 'ダッシュボード',
     greeting: (name: string) => `おはようございます、${name}さん`,
@@ -150,6 +150,10 @@ const ja = {
     visibilityDesc: '公開にすると、他のユーザーがあなたを検索・フォローでき、名前・自己紹介・達成統計が表示されます。目標の内容やメールアドレスは公開されません。',
     visibilityPublic: '公開',
     visibilityPrivate: '非公開',
+    shareTimelineTitle: 'タイムラインに実績を公開',
+    shareTimelineDesc: 'フォロワーのタイムラインに、あなたの日々の達成状況（達成数・達成率）が表示されます。目標の内容は含まれません。',
+    shareTimelineNotesTitle: 'ノートもタイムラインに含める',
+    shareTimelineNotesDesc: '有効にすると、その日書いたノートの内容もフォロワーのタイムラインに表示されます。',
     passwordTitle: 'パスワード変更',
     currentPasswordLabel: '現在のパスワード',
     newPasswordLabel: '新しいパスワード',
@@ -218,6 +222,17 @@ const ja = {
     goal_setter_3: '目標プランナー',
     goal_architect_10: '目標アーキテクト',
   },
+  timeline: {
+    title: 'タイムライン',
+    subtitle: 'フォロー中のユーザーの達成状況をチェックしましょう',
+    empty: 'まだ表示できるタイムラインがありません。ユーザーをフォローするか、フォロー中のユーザーがタイムラインを公開するのをお待ちください。',
+  },
+  dailyNote: {
+    title: '今日のノート',
+    placeholder: '今日の振り返りや気づきを書いてみましょう（1000文字まで）',
+    save: '保存',
+    saved: 'ノートを保存しました',
+  },
   common: { cancel: 'キャンセル', save: '保存', loading: '...' },
   landing: {
     login: 'ログイン',
@@ -239,7 +254,7 @@ const ja = {
 };
 
 const en: typeof ja = {
-  nav: { dashboard: 'Dashboard', goals: 'Goals', calendar: 'Calendar', history: 'History', social: 'Social', settings: 'Settings', logout: 'Log out' },
+  nav: { dashboard: 'Dashboard', goals: 'Goals', calendar: 'Calendar', history: 'History', timeline: 'Timeline', social: 'Social', settings: 'Settings', logout: 'Log out' },
   dashboard: {
     title: 'Dashboard',
     greeting: (name: string) => `Good morning, ${name}!`,
@@ -388,6 +403,10 @@ const en: typeof ja = {
     visibilityDesc: 'When public, other users can find and follow you, and see your name, bio, and achievement stats. Your goal details and email address are never shared.',
     visibilityPublic: 'Public',
     visibilityPrivate: 'Private',
+    shareTimelineTitle: 'Share achievements to timeline',
+    shareTimelineDesc: "Your followers' timeline will show your daily achievements (count and rate). Goal details are never included.",
+    shareTimelineNotesTitle: 'Include notes in timeline',
+    shareTimelineNotesDesc: "When enabled, that day's note text is also shown in your followers' timeline.",
     passwordTitle: 'Change password',
     currentPasswordLabel: 'Current password',
     newPasswordLabel: 'New password',
@@ -456,6 +475,17 @@ const en: typeof ja = {
     goal_setter_3: 'Goal Planner',
     goal_architect_10: 'Goal Architect',
   },
+  timeline: {
+    title: 'Timeline',
+    subtitle: "Check in on the people you follow's progress",
+    empty: 'No timeline entries yet. Follow someone, or wait for the people you follow to share their timeline.',
+  },
+  dailyNote: {
+    title: "Today's note",
+    placeholder: 'Reflect on your day (up to 1000 characters)',
+    save: 'Save',
+    saved: 'Note saved',
+  },
   common: { cancel: 'Cancel', save: 'Save', loading: '...' },
   landing: {
     login: 'Sign in',
@@ -477,7 +507,7 @@ const en: typeof ja = {
 };
 
 const ko: typeof ja = {
-  nav: { dashboard: '대시보드', goals: '목표 관리', calendar: '캘린더', history: '히스토리', social: '소셜', settings: '설정', logout: '로그아웃' },
+  nav: { dashboard: '대시보드', goals: '목표 관리', calendar: '캘린더', history: '히스토리', timeline: '타임라인', social: '소셜', settings: '설정', logout: '로그아웃' },
   dashboard: {
     title: '대시보드',
     greeting: (name: string) => `안녕하세요, ${name}님!`,
@@ -626,6 +656,10 @@ const ko: typeof ja = {
     visibilityDesc: '공개로 설정하면 다른 사용자가 회원님을 검색·팔로우할 수 있고, 이름·자기소개·달성 통계가 표시됩니다. 목표 내용과 이메일 주소는 공개되지 않습니다.',
     visibilityPublic: '공개',
     visibilityPrivate: '비공개',
+    shareTimelineTitle: '타임라인에 실적 공개',
+    shareTimelineDesc: '팔로워의 타임라인에 매일의 달성 현황(달성 수·달성률)이 표시됩니다. 목표 내용은 포함되지 않습니다.',
+    shareTimelineNotesTitle: '타임라인에 노트도 포함',
+    shareTimelineNotesDesc: '활성화하면 그날 작성한 노트 내용도 팔로워의 타임라인에 표시됩니다.',
     passwordTitle: '비밀번호 변경',
     currentPasswordLabel: '현재 비밀번호',
     newPasswordLabel: '새 비밀번호',
@@ -693,6 +727,17 @@ const ko: typeof ja = {
     streak_100: '100일 연속',
     goal_setter_3: '목표 플래너',
     goal_architect_10: '목표 아키텍트',
+  },
+  timeline: {
+    title: '타임라인',
+    subtitle: '팔로우 중인 사용자의 달성 현황을 확인해 보세요',
+    empty: '아직 표시할 타임라인이 없습니다. 사용자를 팔로우하거나, 팔로우 중인 사용자가 타임라인을 공개하기를 기다려 주세요.',
+  },
+  dailyNote: {
+    title: '오늘의 노트',
+    placeholder: '오늘의 회고나 느낀 점을 적어보세요 (최대 1000자)',
+    save: '저장',
+    saved: '노트가 저장되었습니다',
   },
   common: { cancel: '취소', save: '저장', loading: '...' },
   landing: {

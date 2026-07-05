@@ -21,6 +21,8 @@ class User extends Authenticatable
         'password',
         'bio',
         'is_public',
+        'share_timeline',
+        'share_timeline_notes',
     ];
 
     protected $hidden = [
@@ -31,9 +33,11 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_public'         => 'boolean',
+            'email_verified_at'    => 'datetime',
+            'password'             => 'hashed',
+            'is_public'            => 'boolean',
+            'share_timeline'       => 'boolean',
+            'share_timeline_notes' => 'boolean',
         ];
     }
 
@@ -85,5 +89,13 @@ class User extends Authenticatable
     public function isFollowing(User $user): bool
     {
         return $this->following()->whereKey($user->id)->exists();
+    }
+
+    /**
+     * このユーザーの日次ノート（1日1件、目標ごとのメモとは別物）
+     */
+    public function dailyNotes(): HasMany
+    {
+        return $this->hasMany(DailyNote::class);
     }
 }

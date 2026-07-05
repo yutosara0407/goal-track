@@ -16,6 +16,10 @@ export interface User {
   email: string;
   bio: string | null;
   is_public: boolean;
+  /** フォロワーのタイムラインに実績を公開するか（is_publicとは独立） */
+  share_timeline: boolean;
+  /** share_timeline=trueの場合に、日次ノートも一緒に公開するか */
+  share_timeline_notes: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -197,6 +201,8 @@ export interface UpdateProfileFormData {
   email: string;
   bio?: string | null;
   is_public?: boolean;
+  share_timeline?: boolean;
+  share_timeline_notes?: boolean;
 }
 
 /** パスワード変更フォーム */
@@ -219,6 +225,26 @@ export interface ToggleCompletionData {
   date: string;
   completed: boolean;
   note?: string;
+}
+
+/** 日次ノート（ユーザー単位の日記。目標ごとのメモとは別物） */
+export interface DailyNote {
+  date: string;
+  body: string | null;
+}
+
+/** タイムラインの1エントリ（フォロー中ユーザーの1日分の達成状況） */
+export interface TimelineEntry {
+  user: {
+    id: number;
+    name: string;
+    username: string | null;
+  };
+  date: string;
+  completed_count: number;
+  total_goals: number;
+  completion_rate: number;
+  note: string | null;
 }
 
 // ============================================================

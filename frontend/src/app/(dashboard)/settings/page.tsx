@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserRound, AtSign, Lock, Globe, TriangleAlert } from 'lucide-react';
+import { UserRound, AtSign, Lock, Globe, Rss, TriangleAlert } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -28,6 +28,8 @@ const profileSchema = z.object({
   email: z.string().email('有効なメールアドレスを入力してください'),
   bio: z.string().max(500, '自己紹介は500文字以内で入力してください'),
   is_public: z.boolean(),
+  share_timeline: z.boolean(),
+  share_timeline_notes: z.boolean(),
 });
 
 const passwordSchema = z
@@ -71,9 +73,13 @@ export default function SettingsPage() {
       email: user?.email ?? '',
       bio: user?.bio ?? '',
       is_public: user?.is_public ?? true,
+      share_timeline: user?.share_timeline ?? false,
+      share_timeline_notes: user?.share_timeline_notes ?? false,
     },
   });
   const isPublic = profileForm.watch('is_public');
+  const shareTimeline = profileForm.watch('share_timeline');
+  const shareTimelineNotes = profileForm.watch('share_timeline_notes');
 
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -225,6 +231,69 @@ export default function SettingsPage() {
               <span
                 className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
                   isPublic ? 'translate-x-5' : ''
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* タイムライン公開トグル（is_publicとは独立した設定） */}
+          <div className="flex items-start justify-between gap-4 p-4 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-300">
+                <Rss size={14} className={shareTimeline ? 'text-indigo-500' : 'text-slate-400'} />
+                {t.settings.shareTimelineTitle}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t.settings.shareTimelineDesc}</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={shareTimeline}
+              aria-label={t.settings.shareTimelineTitle}
+              onClick={() => {
+                const next = !shareTimeline;
+                profileForm.setValue('share_timeline', next, { shouldDirty: true });
+                // 実績公開自体をOFFにする場合は、note公開もあわせてOFFに戻す
+                if (!next) profileForm.setValue('share_timeline_notes', false, { shouldDirty: true });
+              }}
+              className={`relative shrink-0 w-11 h-6 rounded-full transition-colors ${
+                shareTimeline ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                  shareTimeline ? 'translate-x-5' : ''
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* ノートもタイムラインに含めるかのトグル（share_timeline有効時のみ操作可） */}
+          <div
+            className={`flex items-start justify-between gap-4 p-4 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 ${
+              !shareTimeline ? 'opacity-50' : ''
+            }`}
+          >
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-sm font-medium text-slate-700 dark:text-slate-300">
+                {t.settings.shareTimelineNotesTitle}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{t.settings.shareTimelineNotesDesc}</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={shareTimelineNotes}
+              aria-label={t.settings.shareTimelineNotesTitle}
+              disabled={!shareTimeline}
+              onClick={() => profileForm.setValue('share_timeline_notes', !shareTimelineNotes, { shouldDirty: true })}
+              className={`relative shrink-0 w-11 h-6 rounded-full transition-colors disabled:pointer-events-none ${
+                shareTimelineNotes ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                  shareTimelineNotes ? 'translate-x-5' : ''
                 }`}
               />
             </button>

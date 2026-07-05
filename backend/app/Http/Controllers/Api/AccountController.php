@@ -22,7 +22,17 @@ class AccountController extends Controller
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
-        $user->update($request->only('name', 'username', 'email', 'bio', 'is_public'));
+        $data = $request->only(
+            'name', 'username', 'email', 'bio', 'is_public', 'share_timeline', 'share_timeline_notes'
+        );
+
+        // タイムライン公開自体をOFFにする場合は、note公開設定も一緒にOFFへ戻す
+        // （公開先が無い状態でnote公開フラグだけが残る不整合を防ぐ）
+        if (array_key_exists('share_timeline', $data) && !$data['share_timeline']) {
+            $data['share_timeline_notes'] = false;
+        }
+
+        $user->update($data);
 
         return response()->json($user);
     }

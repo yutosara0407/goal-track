@@ -5,6 +5,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import {
   AuthResponse,
+  DailyNote,
   DayCompletions,
   ForgotPasswordFormData,
   Goal,
@@ -16,6 +17,7 @@ import {
   OverviewStats,
   RegisterFormData,
   ResetPasswordFormData,
+  TimelineEntry,
   ToggleCompletionData,
   UpdatePasswordFormData,
   UpdateProfileFormData,
@@ -276,6 +278,38 @@ export const statsApi = {
     const res = await apiClient.get<MonthlyStatsResponse>('/stats/monthly', {
       params: { year, month },
     });
+    return res.data;
+  },
+};
+
+// ============================================================
+// 日次ノートAPI（ユーザー単位の日記。目標ごとのメモとは別物）
+// ============================================================
+
+export const notesApi = {
+  /** 指定日の自分のノートを取得（省略時は今日） */
+  get: async (date?: string): Promise<DailyNote> => {
+    const res = await apiClient.get<DailyNote>('/notes', {
+      params: date ? { date } : {},
+    });
+    return res.data;
+  },
+
+  /** 指定日のノートを保存する（空文字を送ると未記録に戻る） */
+  save: async (date: string, body: string): Promise<DailyNote> => {
+    const res = await apiClient.put<DailyNote>('/notes', { date, body });
+    return res.data;
+  },
+};
+
+// ============================================================
+// タイムラインAPI
+// ============================================================
+
+export const timelineApi = {
+  /** フォロー中×タイムライン公開ユーザーの直近の達成状況+ノート一覧 */
+  list: async (): Promise<TimelineEntry[]> => {
+    const res = await apiClient.get<TimelineEntry[]>('/timeline');
     return res.data;
   },
 };

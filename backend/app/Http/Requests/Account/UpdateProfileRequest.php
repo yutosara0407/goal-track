@@ -42,8 +42,10 @@ class UpdateProfileRequest extends FormRequest
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('users')->ignore($this->user()->id),
             ],
-            'bio'       => ['nullable', 'string', 'max:500'],
-            'is_public' => ['sometimes', 'boolean'],
+            'bio'                  => ['nullable', 'string', 'max:500'],
+            'is_public'            => ['sometimes', 'boolean'],
+            'share_timeline'       => ['sometimes', 'boolean'],
+            'share_timeline_notes' => ['sometimes', 'boolean'],
         ];
     }
 
